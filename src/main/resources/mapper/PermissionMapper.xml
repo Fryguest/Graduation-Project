@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlmiao.dao.PermissionMapper">
+  <resultMap id="BaseResultMap" type="com.wlmiao.model.Permission">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="permission_url" jdbcType="VARCHAR" property="permissionUrl" />
+    <result column="permission_name" jdbcType="VARCHAR" property="permissionName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, permission_url, permission_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_permission
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from t_permission
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.wlmiao.model.Permission">
+    insert into t_permission (id, permission_url, permission_name
+      )
+    values (#{id,jdbcType=BIGINT}, #{permissionUrl,jdbcType=VARCHAR}, #{permissionName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.wlmiao.model.Permission">
+    insert into t_permission
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="permissionUrl != null">
+        permission_url,
+      </if>
+      <if test="permissionName != null">
+        permission_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="permissionUrl != null">
+        #{permissionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionName != null">
+        #{permissionName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlmiao.model.Permission">
+    update t_permission
+    <set>
+      <if test="permissionUrl != null">
+        permission_url = #{permissionUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="permissionName != null">
+        permission_name = #{permissionName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wlmiao.model.Permission">
+    update t_permission
+    set permission_url = #{permissionUrl,jdbcType=VARCHAR},
+      permission_name = #{permissionName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="findRoleByUserId" parameterType="java.lang.Long" resultType="java.lang.String">
+    select t_permission.permission_url
+    from t_permission 
+    inner join t_role_permission on t_role_permission.permission_id = t_permission.id
+    inner join t_user_role on t_user_role.role_id = t_role_permission.role_id
+    where t_user_role.user_id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>
