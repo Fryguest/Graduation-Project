@@ -75,12 +75,6 @@
       <optional>true</optional>
     </dependency>
 
-    <!-- flyway -->
-    <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-core</artifactId>
-      <version>4.2.0</version>
-    </dependency>
 
     <!-- commons-lang3 -->
     <dependency>
@@ -156,11 +150,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.flywaydb</groupId>
-        <artifactId>flyway-maven-plugin</artifactId>
-        <version>4.2.0</version>
       </plugin>
     </plugins>
   </build>
