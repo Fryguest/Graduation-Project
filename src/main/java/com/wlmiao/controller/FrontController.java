@@ -22,15 +22,15 @@ public class FrontController {
         return "teacher_end_point";
     }
 
-//    @RequestMapping("/studentEndPoint")
-//    public String studentEndPoint(Model model){
-//        model.addAttribute("taskType", 10000);
-//        return "student_end_point";
-//    }
-
-    @RequestMapping("/courseChosen")
+    @RequestMapping("/courseChosenFront")
     public String courseChosen(Model model){
         model.addAttribute("taskType", FrontConstant.COURSE_CHOSEN);
         return "course_chosen";
+    }
+
+    @RequestMapping("/importStudentFront")
+    public String importStudentFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.IMPORT_STUDENT);
+        return "import_student";
     }
 }

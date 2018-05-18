@@ -86,7 +86,7 @@ public class FileUpload {
             String fileName = null == myFileName ? httpUrl.substring(httpUrl.lastIndexOf("/")).replace("/", "")
                 : myFileName; //图片文件名(null时用网络图片原名)
             url = new URL(httpUrl);        //初始化url对象
-            in = new BufferedInputStream(url.openStream());    //初始化in对象，也就是获得url字节流
+            in = new BufferedInputStream(url.openStream());                                    //初始化in对象，也就是获得url字节流
             //file = new FileOutputStream(new File(filePath +"\\"+ fileName));
             file = new FileOutputStream(mkdirsmy(filePath, fileName));
             int t;

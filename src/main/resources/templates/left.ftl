@@ -21,26 +21,34 @@
             </a>
             <ul class="submenu">
                 <li <#if taskType?? && taskType == 10000>class="active"</#if>>
-                    <a href="courseChosen">
+                    <a href="courseChosenFront">
                         <i class="icon-double-angle-right"></i>
                         选课
                     </a>
                 </li>
             </ul>
         </li>
-        <li>
+        <li <#if taskType??  && (taskType >= 20000 && taskType < 30000)>class="active open"</#if>>
             <a href="#" class="dropdown-toggle">
                 <i class="icon-arrow-down"></i>
                 <span class="menu-text"> 教师入口 </span>
                 <b class="arrow icon-angle-down"></b>
             </a>
         </li>
-        <li>
+        <li <#if taskType??  && (taskType >= 30000 && taskType < 40000)>class="active open"</#if>>
             <a href="#" class="dropdown-toggle">
                 <i class="icon-arrow-down"></i>
                 <span class="menu-text"> manager入口 </span>
                 <b class="arrow icon-angle-down"></b>
             </a>
+            <ul class="submenu">
+                <li <#if taskType?? && taskType == 30000>class="active"</#if>>
+                    <a href="importStudentFront">
+                      <i class="icon-double-angle-right"></i>
+                      新生名单导入
+                    </a>
+                </li>
+            </ul>
         </li>
         <li>
             <a href="#" class="dropdown-toggle">
