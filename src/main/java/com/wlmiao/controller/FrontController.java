@@ -1,5 +1,6 @@
 package com.wlmiao.controller;
 
+import com.wlmiao.constant.FrontConstant;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,14 +22,15 @@ public class FrontController {
         return "teacher_end_point";
     }
 
-    @RequestMapping("/studentEndPoint")
-    public String studentEndPoint(Model model){
-        model.addAttribute("taskType", 10000);
-        return "student_end_point";
-    }
+//    @RequestMapping("/studentEndPoint")
+//    public String studentEndPoint(Model model){
+//        model.addAttribute("taskType", 10000);
+//        return "student_end_point";
+//    }
+
     @RequestMapping("/courseChosen")
     public String courseChosen(Model model){
-        model.addAttribute("taskType", 10000);
+        model.addAttribute("taskType", FrontConstant.COURSE_CHOSEN);
         return "course_chosen";
     }
 }
