@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wlmiao.dao.StudentInformationMapper">
+  <resultMap id="BaseResultMap" type="com.wlmiao.bo.StudentInformation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="student_no" jdbcType="VARCHAR" property="studentNo" />
+    <result column="student_name" jdbcType="VARCHAR" property="studentName" />
+    <result column="class_no" jdbcType="VARCHAR" property="classNo" />
+    <result column="sex" jdbcType="VARCHAR" property="sex" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="political_outlook" jdbcType="VARCHAR" property="politicalOutlook" />
+    <result column="nation" jdbcType="VARCHAR" property="nation" />
+    <result column="native_place" jdbcType="VARCHAR" property="nativePlace" />
+    <result column="identity_number" jdbcType="VARCHAR" property="identityNumber" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, student_no, student_name, class_no, sex, grade, political_outlook, nation, native_place, 
+    identity_number
+  </sql>
+  <select id="selectByExample" parameterType="com.wlmiao.bo.StudentInformationExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from student_information
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from student_information
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from student_information
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.wlmiao.bo.StudentInformation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into student_information (student_no, student_name, class_no, 
+      sex, grade, political_outlook, 
+      nation, native_place, identity_number
+      )
+    values (#{studentNo,jdbcType=VARCHAR}, #{studentName,jdbcType=VARCHAR}, #{classNo,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR}, #{politicalOutlook,jdbcType=VARCHAR}, 
+      #{nation,jdbcType=VARCHAR}, #{nativePlace,jdbcType=VARCHAR}, #{identityNumber,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.wlmiao.bo.StudentInformation">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into student_information
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="studentNo != null">
+        student_no,
+      </if>
+      <if test="studentName != null">
+        student_name,
+      </if>
+      <if test="classNo != null">
+        class_no,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="grade != null">
+        grade,
+      </if>
+      <if test="politicalOutlook != null">
+        political_outlook,
+      </if>
+      <if test="nation != null">
+        nation,
+      </if>
+      <if test="nativePlace != null">
+        native_place,
+      </if>
+      <if test="identityNumber != null">
+        identity_number,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="studentNo != null">
+        #{studentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="studentName != null">
+        #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="classNo != null">
+        #{classNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="grade != null">
+        #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="politicalOutlook != null">
+        #{politicalOutlook,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null">
+        #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="nativePlace != null">
+        #{nativePlace,jdbcType=VARCHAR},
+      </if>
+      <if test="identityNumber != null">
+        #{identityNumber,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.wlmiao.bo.StudentInformationExample" resultType="java.lang.Long">
+    select count(*) from student_information
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update student_information
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.studentNo != null">
+        student_no = #{record.studentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.studentName != null">
+        student_name = #{record.studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.classNo != null">
+        class_no = #{record.classNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sex != null">
+        sex = #{record.sex,jdbcType=VARCHAR},
+      </if>
+      <if test="record.grade != null">
+        grade = #{record.grade,jdbcType=VARCHAR},
+      </if>
+      <if test="record.politicalOutlook != null">
+        political_outlook = #{record.politicalOutlook,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nation != null">
+        nation = #{record.nation,jdbcType=VARCHAR},
+      </if>
+      <if test="record.nativePlace != null">
+        native_place = #{record.nativePlace,jdbcType=VARCHAR},
+      </if>
+      <if test="record.identityNumber != null">
+        identity_number = #{record.identityNumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update student_information
+    set id = #{record.id,jdbcType=BIGINT},
+      student_no = #{record.studentNo,jdbcType=VARCHAR},
+      student_name = #{record.studentName,jdbcType=VARCHAR},
+      class_no = #{record.classNo,jdbcType=VARCHAR},
+      sex = #{record.sex,jdbcType=VARCHAR},
+      grade = #{record.grade,jdbcType=VARCHAR},
+      political_outlook = #{record.politicalOutlook,jdbcType=VARCHAR},
+      nation = #{record.nation,jdbcType=VARCHAR},
+      native_place = #{record.nativePlace,jdbcType=VARCHAR},
+      identity_number = #{record.identityNumber,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlmiao.bo.StudentInformation">
+    update student_information
+    <set>
+      <if test="studentNo != null">
+        student_no = #{studentNo,jdbcType=VARCHAR},
+      </if>
+      <if test="studentName != null">
+        student_name = #{studentName,jdbcType=VARCHAR},
+      </if>
+      <if test="classNo != null">
+        class_no = #{classNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=VARCHAR},
+      </if>
+      <if test="grade != null">
+        grade = #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="politicalOutlook != null">
+        political_outlook = #{politicalOutlook,jdbcType=VARCHAR},
+      </if>
+      <if test="nation != null">
+        nation = #{nation,jdbcType=VARCHAR},
+      </if>
+      <if test="nativePlace != null">
+        native_place = #{nativePlace,jdbcType=VARCHAR},
+      </if>
+      <if test="identityNumber != null">
+        identity_number = #{identityNumber,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.wlmiao.bo.StudentInformation">
+    update student_information
+    set student_no = #{studentNo,jdbcType=VARCHAR},
+      student_name = #{studentName,jdbcType=VARCHAR},
+      class_no = #{classNo,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=VARCHAR},
+      grade = #{grade,jdbcType=VARCHAR},
+      political_outlook = #{politicalOutlook,jdbcType=VARCHAR},
+      nation = #{nation,jdbcType=VARCHAR},
+      native_place = #{nativePlace,jdbcType=VARCHAR},
+      identity_number = #{identityNumber,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectByExampleWithRowbounds" parameterType="com.wlmiao.bo.StudentInformationExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from student_information
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+</mapper>

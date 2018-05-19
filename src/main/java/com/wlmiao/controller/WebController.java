@@ -1,7 +1,5 @@
 package com.wlmiao.controller;
 
-import static com.wlmiao.util.XlsxUtil.readFromXls;
-
 import com.wlmiao.service.IManagerService;
 import com.wlmiao.util.XlsxUtil;
 import java.util.HashMap;
@@ -18,7 +16,6 @@ public class WebController {
     @Autowired
     private IManagerService managerService;
 
-
     @RequestMapping("/ping")
     @ResponseBody
     public String hello() {
@@ -30,9 +27,10 @@ public class WebController {
      */
     @RequestMapping("/importStudent")
     @ResponseBody
-    public String importStudent(@RequestParam("student_list")String studentList, @RequestParam("class_number")Integer classNumber) throws Exception{
+    public String importStudent(@RequestParam("student_list") String studentList,
+        @RequestParam("class_number") Integer classNumber) throws Exception {
         System.out.println(studentList);
-        List<HashMap<String ,String>> list = XlsxUtil.readFromXls(studentList);
+        List<HashMap<String, String>> list = XlsxUtil.readFromXls(studentList);
 
         return "success";
     }
