@@ -6,6 +6,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
 public interface CourseStudentMapper {
     long countByExample(CourseStudentExample example);
 

@@ -1,8 +1,9 @@
 package com.wlmiao.bo;
 
 import java.io.Serializable;
+import lombok.Builder;
 
-public class StudentInformation implements Serializable {
+public class StudentMain implements Serializable {
     private Long id;
 
     private String studentNo;
@@ -13,15 +14,21 @@ public class StudentInformation implements Serializable {
 
     private String sex;
 
+    private String instituteNo;
+
+    private String institute;
+
+    private String majorNo;
+
+    private String major;
+
     private String grade;
-
-    private String politicalOutlook;
-
-    private String nation;
 
     private String nativePlace;
 
     private String identityNumber;
+
+    private Float gpa;
 
     private static final long serialVersionUID = 1L;
 
@@ -65,28 +72,44 @@ public class StudentInformation implements Serializable {
         this.sex = sex == null ? null : sex.trim();
     }
 
+    public String getInstituteNo() {
+        return instituteNo;
+    }
+
+    public void setInstituteNo(String instituteNo) {
+        this.instituteNo = instituteNo == null ? null : instituteNo.trim();
+    }
+
+    public String getInstitute() {
+        return institute;
+    }
+
+    public void setInstitute(String institute) {
+        this.institute = institute == null ? null : institute.trim();
+    }
+
+    public String getMajorNo() {
+        return majorNo;
+    }
+
+    public void setMajorNo(String majorNo) {
+        this.majorNo = majorNo == null ? null : majorNo.trim();
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major == null ? null : major.trim();
+    }
+
     public String getGrade() {
         return grade;
     }
 
     public void setGrade(String grade) {
         this.grade = grade == null ? null : grade.trim();
-    }
-
-    public String getPoliticalOutlook() {
-        return politicalOutlook;
-    }
-
-    public void setPoliticalOutlook(String politicalOutlook) {
-        this.politicalOutlook = politicalOutlook == null ? null : politicalOutlook.trim();
-    }
-
-    public String getNation() {
-        return nation;
-    }
-
-    public void setNation(String nation) {
-        this.nation = nation == null ? null : nation.trim();
     }
 
     public String getNativePlace() {
@@ -105,6 +128,14 @@ public class StudentInformation implements Serializable {
         this.identityNumber = identityNumber == null ? null : identityNumber.trim();
     }
 
+    public Float getGpa() {
+        return gpa;
+    }
+
+    public void setGpa(Float gpa) {
+        this.gpa = gpa;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -116,11 +147,14 @@ public class StudentInformation implements Serializable {
         sb.append(", studentName=").append(studentName);
         sb.append(", classNo=").append(classNo);
         sb.append(", sex=").append(sex);
+        sb.append(", instituteNo=").append(instituteNo);
+        sb.append(", institute=").append(institute);
+        sb.append(", majorNo=").append(majorNo);
+        sb.append(", major=").append(major);
         sb.append(", grade=").append(grade);
-        sb.append(", politicalOutlook=").append(politicalOutlook);
-        sb.append(", nation=").append(nation);
         sb.append(", nativePlace=").append(nativePlace);
         sb.append(", identityNumber=").append(identityNumber);
+        sb.append(", gpa=").append(gpa);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

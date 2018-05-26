@@ -3,14 +3,14 @@ package com.wlmiao.bo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassInformationExample {
+public class ClassMainExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public ClassInformationExample() {
+    public ClassMainExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -371,76 +371,6 @@ public class ClassInformationExample {
 
         public Criteria andClassNameNotBetween(String value1, String value2) {
             addCriterion("class_name not between", value1, value2, "className");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameIsNull() {
-            addCriterion("simply_name is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameIsNotNull() {
-            addCriterion("simply_name is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameEqualTo(String value) {
-            addCriterion("simply_name =", value, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameNotEqualTo(String value) {
-            addCriterion("simply_name <>", value, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameGreaterThan(String value) {
-            addCriterion("simply_name >", value, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameGreaterThanOrEqualTo(String value) {
-            addCriterion("simply_name >=", value, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameLessThan(String value) {
-            addCriterion("simply_name <", value, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameLessThanOrEqualTo(String value) {
-            addCriterion("simply_name <=", value, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameLike(String value) {
-            addCriterion("simply_name like", value, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameNotLike(String value) {
-            addCriterion("simply_name not like", value, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameIn(List<String> values) {
-            addCriterion("simply_name in", values, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameNotIn(List<String> values) {
-            addCriterion("simply_name not in", values, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameBetween(String value1, String value2) {
-            addCriterion("simply_name between", value1, value2, "simplyName");
-            return (Criteria) this;
-        }
-
-        public Criteria andSimplyNameNotBetween(String value1, String value2) {
-            addCriterion("simply_name not between", value1, value2, "simplyName");
             return (Criteria) this;
         }
 

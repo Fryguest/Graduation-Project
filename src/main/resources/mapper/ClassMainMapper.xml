@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wlmiao.dao.StudentScoreMapper">
-  <resultMap id="BaseResultMap" type="com.wlmiao.bo.StudentScore">
+<mapper namespace="com.wlmiao.dao.ClassMainMapper">
+  <resultMap id="BaseResultMap" type="com.wlmiao.bo.ClassMain">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="student_no" jdbcType="VARCHAR" property="studentNo" />
-    <result column="course_no" jdbcType="VARCHAR" property="courseNo" />
-    <result column="score" jdbcType="INTEGER" property="score" />
-    <result column="rework" jdbcType="VARCHAR" property="rework" />
-    <result column="supplementary_examination" jdbcType="VARCHAR" property="supplementaryExamination" />
-    <result column="confirm" jdbcType="VARCHAR" property="confirm" />
+    <result column="class_no" jdbcType="VARCHAR" property="classNo" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="class_name" jdbcType="VARCHAR" property="className" />
+    <result column="student_count" jdbcType="INTEGER" property="studentCount" />
+    <result column="head_teacher" jdbcType="VARCHAR" property="headTeacher" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -69,16 +68,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, student_no, course_no, score, rework, supplementary_examination, confirm
+    id, class_no, grade, class_name, student_count, head_teacher
   </sql>
-  <select id="selectByExample" parameterType="com.wlmiao.bo.StudentScoreExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.wlmiao.bo.ClassMainExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from student_score
+    from class_main
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -89,99 +88,88 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from student_score
+    from class_main
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from student_score
+    delete from class_main
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.wlmiao.bo.StudentScore">
+  <insert id="insert" parameterType="com.wlmiao.bo.ClassMain">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into student_score (student_no, course_no, score, 
-      rework, supplementary_examination, confirm
-      )
-    values (#{studentNo,jdbcType=VARCHAR}, #{courseNo,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, 
-      #{rework,jdbcType=VARCHAR}, #{supplementaryExamination,jdbcType=VARCHAR}, #{confirm,jdbcType=VARCHAR}
-      )
+    insert into class_main (class_no, grade, class_name, 
+      student_count, head_teacher)
+    values (#{classNo,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR}, #{className,jdbcType=VARCHAR}, 
+      #{studentCount,jdbcType=INTEGER}, #{headTeacher,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.wlmiao.bo.StudentScore">
+  <insert id="insertSelective" parameterType="com.wlmiao.bo.ClassMain">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into student_score
+    insert into class_main
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="studentNo != null">
-        student_no,
+      <if test="classNo != null">
+        class_no,
       </if>
-      <if test="courseNo != null">
-        course_no,
+      <if test="grade != null">
+        grade,
       </if>
-      <if test="score != null">
-        score,
+      <if test="className != null">
+        class_name,
       </if>
-      <if test="rework != null">
-        rework,
+      <if test="studentCount != null">
+        student_count,
       </if>
-      <if test="supplementaryExamination != null">
-        supplementary_examination,
-      </if>
-      <if test="confirm != null">
-        confirm,
+      <if test="headTeacher != null">
+        head_teacher,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="studentNo != null">
-        #{studentNo,jdbcType=VARCHAR},
+      <if test="classNo != null">
+        #{classNo,jdbcType=VARCHAR},
       </if>
-      <if test="courseNo != null">
-        #{courseNo,jdbcType=VARCHAR},
+      <if test="grade != null">
+        #{grade,jdbcType=VARCHAR},
       </if>
-      <if test="score != null">
-        #{score,jdbcType=INTEGER},
+      <if test="className != null">
+        #{className,jdbcType=VARCHAR},
       </if>
-      <if test="rework != null">
-        #{rework,jdbcType=VARCHAR},
+      <if test="studentCount != null">
+        #{studentCount,jdbcType=INTEGER},
       </if>
-      <if test="supplementaryExamination != null">
-        #{supplementaryExamination,jdbcType=VARCHAR},
-      </if>
-      <if test="confirm != null">
-        #{confirm,jdbcType=VARCHAR},
+      <if test="headTeacher != null">
+        #{headTeacher,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.wlmiao.bo.StudentScoreExample" resultType="java.lang.Long">
-    select count(*) from student_score
+  <select id="countByExample" parameterType="com.wlmiao.bo.ClassMainExample" resultType="java.lang.Long">
+    select count(*) from class_main
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update student_score
+    update class_main
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.studentNo != null">
-        student_no = #{record.studentNo,jdbcType=VARCHAR},
+      <if test="record.classNo != null">
+        class_no = #{record.classNo,jdbcType=VARCHAR},
       </if>
-      <if test="record.courseNo != null">
-        course_no = #{record.courseNo,jdbcType=VARCHAR},
+      <if test="record.grade != null">
+        grade = #{record.grade,jdbcType=VARCHAR},
       </if>
-      <if test="record.score != null">
-        score = #{record.score,jdbcType=INTEGER},
+      <if test="record.className != null">
+        class_name = #{record.className,jdbcType=VARCHAR},
       </if>
-      <if test="record.rework != null">
-        rework = #{record.rework,jdbcType=VARCHAR},
+      <if test="record.studentCount != null">
+        student_count = #{record.studentCount,jdbcType=INTEGER},
       </if>
-      <if test="record.supplementaryExamination != null">
-        supplementary_examination = #{record.supplementaryExamination,jdbcType=VARCHAR},
-      </if>
-      <if test="record.confirm != null">
-        confirm = #{record.confirm,jdbcType=VARCHAR},
+      <if test="record.headTeacher != null">
+        head_teacher = #{record.headTeacher,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -189,60 +177,55 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update student_score
+    update class_main
     set id = #{record.id,jdbcType=BIGINT},
-      student_no = #{record.studentNo,jdbcType=VARCHAR},
-      course_no = #{record.courseNo,jdbcType=VARCHAR},
-      score = #{record.score,jdbcType=INTEGER},
-      rework = #{record.rework,jdbcType=VARCHAR},
-      supplementary_examination = #{record.supplementaryExamination,jdbcType=VARCHAR},
-      confirm = #{record.confirm,jdbcType=VARCHAR}
+      class_no = #{record.classNo,jdbcType=VARCHAR},
+      grade = #{record.grade,jdbcType=VARCHAR},
+      class_name = #{record.className,jdbcType=VARCHAR},
+      student_count = #{record.studentCount,jdbcType=INTEGER},
+      head_teacher = #{record.headTeacher,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.wlmiao.bo.StudentScore">
-    update student_score
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlmiao.bo.ClassMain">
+    update class_main
     <set>
-      <if test="studentNo != null">
-        student_no = #{studentNo,jdbcType=VARCHAR},
+      <if test="classNo != null">
+        class_no = #{classNo,jdbcType=VARCHAR},
       </if>
-      <if test="courseNo != null">
-        course_no = #{courseNo,jdbcType=VARCHAR},
+      <if test="grade != null">
+        grade = #{grade,jdbcType=VARCHAR},
       </if>
-      <if test="score != null">
-        score = #{score,jdbcType=INTEGER},
+      <if test="className != null">
+        class_name = #{className,jdbcType=VARCHAR},
       </if>
-      <if test="rework != null">
-        rework = #{rework,jdbcType=VARCHAR},
+      <if test="studentCount != null">
+        student_count = #{studentCount,jdbcType=INTEGER},
       </if>
-      <if test="supplementaryExamination != null">
-        supplementary_examination = #{supplementaryExamination,jdbcType=VARCHAR},
-      </if>
-      <if test="confirm != null">
-        confirm = #{confirm,jdbcType=VARCHAR},
+      <if test="headTeacher != null">
+        head_teacher = #{headTeacher,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.wlmiao.bo.StudentScore">
-    update student_score
-    set student_no = #{studentNo,jdbcType=VARCHAR},
-      course_no = #{courseNo,jdbcType=VARCHAR},
-      score = #{score,jdbcType=INTEGER},
-      rework = #{rework,jdbcType=VARCHAR},
-      supplementary_examination = #{supplementaryExamination,jdbcType=VARCHAR},
-      confirm = #{confirm,jdbcType=VARCHAR}
+  <update id="updateByPrimaryKey" parameterType="com.wlmiao.bo.ClassMain">
+    update class_main
+    set class_no = #{classNo,jdbcType=VARCHAR},
+      grade = #{grade,jdbcType=VARCHAR},
+      class_name = #{className,jdbcType=VARCHAR},
+      student_count = #{studentCount,jdbcType=INTEGER},
+      head_teacher = #{headTeacher,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByExampleWithRowbounds" parameterType="com.wlmiao.bo.StudentScoreExample" resultMap="BaseResultMap">
+  <select id="selectByExampleWithRowbounds" parameterType="com.wlmiao.bo.ClassMainExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from student_score
+    from class_main
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>

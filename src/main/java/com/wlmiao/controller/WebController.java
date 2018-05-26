@@ -1,9 +1,11 @@
 package com.wlmiao.controller;
 
+import com.wlmiao.exception.EduSysException;
 import com.wlmiao.service.IManagerService;
-import com.wlmiao.util.XlsxUtil;
-import java.util.HashMap;
-import java.util.List;
+import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class WebController {
+
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private IManagerService managerService;
@@ -26,12 +30,18 @@ public class WebController {
      * 导入新生
      */
     @RequestMapping("/importStudent")
-    @ResponseBody
-    public String importStudent(@RequestParam("student_list") String studentList,
-        @RequestParam("class_number") Integer classNumber) throws Exception {
-        System.out.println(studentList);
-        List<HashMap<String, String>> list = XlsxUtil.readFromXls(studentList);
-
-        return "success";
+    public void importStudent(
+        @RequestParam("student_list") String studentList,
+        @RequestParam("class_number") Integer classNumber,
+        @RequestParam("grade") String grade,
+        HttpServletResponse response) throws IOException {
+        logger.info("get request to importStudent, studentList = {}, classNumber={}, grade = {}", studentList,
+            classNumber, grade);
+        try {
+            managerService.importStudentAndDivision(studentList, classNumber, grade, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
     }
+
 }

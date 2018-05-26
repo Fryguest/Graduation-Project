@@ -1,5 +1,7 @@
 package com.wlmiao.util;
 
+import com.wlmiao.constant.ExceptionConstant;
+import com.wlmiao.exception.EduSysException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -116,24 +118,36 @@ public class XlsxUtil {
      * 读取xlsx文件（兼容xls）
      * 以第一行作为title，生成hashmap
      */
-    public static List<HashMap<String, String>> readFromXls(String filePath) throws Exception {
+    public static List<HashMap<String, String>> readFromXls(String filePath) throws EduSysException {
 
-        List<HashMap<String, String>> response = new ArrayList<>();
-        List<List<List<String>>> annoListFile = XlsxUtil.read(filePath);
-        List<List<String>> annoSheet = annoListFile.get(0);
-
-        List<String> title = annoSheet.get(0);
-
-        for (Integer rowNumber = 1; rowNumber < annoSheet.size(); rowNumber++) {
-            HashMap<String, String> map = new HashMap<>();
-            List<String> row = annoSheet.get(rowNumber);
-            for (Integer index = 0; index < title.size() && index < row.size(); index++) {
-                map.put(title.get(index), row.get(index));
+        try {
+            List<HashMap<String, String>> response = new ArrayList<>();
+            List<List<List<String>>> annoListFile = XlsxUtil.read(filePath);
+            if (CollectionUtils.isEmpty(annoListFile)) {
+                throw new EduSysException(ExceptionConstant.XLSX_ERROR);
             }
-            response.add(map);
+            List<List<String>> annoSheet = annoListFile.get(0);
+            if (CollectionUtils.isEmpty(annoSheet)) {
+                throw new EduSysException(ExceptionConstant.XLSX_ERROR);
+            }
+
+            List<String> title = annoSheet.get(0);
+
+            for (Integer rowNumber = 1; rowNumber < annoSheet.size(); rowNumber++) {
+                HashMap<String, String> map = new HashMap<>();
+                List<String> row = annoSheet.get(rowNumber);
+                for (Integer index = 0; index < title.size() && index < row.size(); index++) {
+                    map.put(title.get(index), row.get(index));
+                }
+                response.add(map);
+            }
+
+            return response;
+
+        } catch (IOException e) {
+            throw new EduSysException(ExceptionConstant.XLSX_ERROR);
         }
 
-        return response;
     }
 
 

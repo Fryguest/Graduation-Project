@@ -2,7 +2,7 @@ package com.wlmiao.bo;
 
 import java.io.Serializable;
 
-public class ClassInformation implements Serializable {
+public class ClassMain implements Serializable {
     private Long id;
 
     private String classNo;
@@ -10,8 +10,6 @@ public class ClassInformation implements Serializable {
     private String grade;
 
     private String className;
-
-    private String simplyName;
 
     private Integer studentCount;
 
@@ -51,14 +49,6 @@ public class ClassInformation implements Serializable {
         this.className = className == null ? null : className.trim();
     }
 
-    public String getSimplyName() {
-        return simplyName;
-    }
-
-    public void setSimplyName(String simplyName) {
-        this.simplyName = simplyName == null ? null : simplyName.trim();
-    }
-
     public Integer getStudentCount() {
         return studentCount;
     }
@@ -85,7 +75,6 @@ public class ClassInformation implements Serializable {
         sb.append(", classNo=").append(classNo);
         sb.append(", grade=").append(grade);
         sb.append(", className=").append(className);
-        sb.append(", simplyName=").append(simplyName);
         sb.append(", studentCount=").append(studentCount);
         sb.append(", headTeacher=").append(headTeacher);
         sb.append(", serialVersionUID=").append(serialVersionUID);

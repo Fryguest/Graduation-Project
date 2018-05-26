@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wlmiao.dao.StudentInformationMapper">
-  <resultMap id="BaseResultMap" type="com.wlmiao.bo.StudentInformation">
+<mapper namespace="com.wlmiao.dao.TeacherMainMapper">
+  <resultMap id="BaseResultMap" type="com.wlmiao.bo.TeacherMain">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="student_no" jdbcType="VARCHAR" property="studentNo" />
-    <result column="student_name" jdbcType="VARCHAR" property="studentName" />
-    <result column="class_no" jdbcType="VARCHAR" property="classNo" />
+    <result column="teacher_no" jdbcType="VARCHAR" property="teacherNo" />
+    <result column="teacher_name" jdbcType="VARCHAR" property="teacherName" />
     <result column="sex" jdbcType="VARCHAR" property="sex" />
-    <result column="grade" jdbcType="VARCHAR" property="grade" />
-    <result column="political_outlook" jdbcType="VARCHAR" property="politicalOutlook" />
-    <result column="nation" jdbcType="VARCHAR" property="nation" />
+    <result column="institute_no" jdbcType="VARCHAR" property="instituteNo" />
+    <result column="institute" jdbcType="VARCHAR" property="institute" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
     <result column="native_place" jdbcType="VARCHAR" property="nativePlace" />
     <result column="identity_number" jdbcType="VARCHAR" property="identityNumber" />
   </resultMap>
@@ -72,17 +71,17 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, student_no, student_name, class_no, sex, grade, political_outlook, nation, native_place, 
+    id, teacher_no, teacher_name, sex, institute_no, institute, title, native_place, 
     identity_number
   </sql>
-  <select id="selectByExample" parameterType="com.wlmiao.bo.StudentInformationExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.wlmiao.bo.TeacherMainExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from student_information
+    from teacher_main
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -93,52 +92,47 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from student_information
+    from teacher_main
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from student_information
+    delete from teacher_main
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.wlmiao.bo.StudentInformation">
+  <insert id="insert" parameterType="com.wlmiao.bo.TeacherMain">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into student_information (student_no, student_name, class_no, 
-      sex, grade, political_outlook, 
-      nation, native_place, identity_number
-      )
-    values (#{studentNo,jdbcType=VARCHAR}, #{studentName,jdbcType=VARCHAR}, #{classNo,jdbcType=VARCHAR}, 
-      #{sex,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR}, #{politicalOutlook,jdbcType=VARCHAR}, 
-      #{nation,jdbcType=VARCHAR}, #{nativePlace,jdbcType=VARCHAR}, #{identityNumber,jdbcType=VARCHAR}
-      )
+    insert into teacher_main (teacher_no, teacher_name, sex, 
+      institute_no, institute, title, 
+      native_place, identity_number)
+    values (#{teacherNo,jdbcType=VARCHAR}, #{teacherName,jdbcType=VARCHAR}, #{sex,jdbcType=VARCHAR}, 
+      #{instituteNo,jdbcType=VARCHAR}, #{institute,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{nativePlace,jdbcType=VARCHAR}, #{identityNumber,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.wlmiao.bo.StudentInformation">
+  <insert id="insertSelective" parameterType="com.wlmiao.bo.TeacherMain">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into student_information
+    insert into teacher_main
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="studentNo != null">
-        student_no,
+      <if test="teacherNo != null">
+        teacher_no,
       </if>
-      <if test="studentName != null">
-        student_name,
-      </if>
-      <if test="classNo != null">
-        class_no,
+      <if test="teacherName != null">
+        teacher_name,
       </if>
       <if test="sex != null">
         sex,
       </if>
-      <if test="grade != null">
-        grade,
+      <if test="instituteNo != null">
+        institute_no,
       </if>
-      <if test="politicalOutlook != null">
-        political_outlook,
+      <if test="institute != null">
+        institute,
       </if>
-      <if test="nation != null">
-        nation,
+      <if test="title != null">
+        title,
       </if>
       <if test="nativePlace != null">
         native_place,
@@ -148,26 +142,23 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="studentNo != null">
-        #{studentNo,jdbcType=VARCHAR},
+      <if test="teacherNo != null">
+        #{teacherNo,jdbcType=VARCHAR},
       </if>
-      <if test="studentName != null">
-        #{studentName,jdbcType=VARCHAR},
-      </if>
-      <if test="classNo != null">
-        #{classNo,jdbcType=VARCHAR},
+      <if test="teacherName != null">
+        #{teacherName,jdbcType=VARCHAR},
       </if>
       <if test="sex != null">
         #{sex,jdbcType=VARCHAR},
       </if>
-      <if test="grade != null">
-        #{grade,jdbcType=VARCHAR},
+      <if test="instituteNo != null">
+        #{instituteNo,jdbcType=VARCHAR},
       </if>
-      <if test="politicalOutlook != null">
-        #{politicalOutlook,jdbcType=VARCHAR},
+      <if test="institute != null">
+        #{institute,jdbcType=VARCHAR},
       </if>
-      <if test="nation != null">
-        #{nation,jdbcType=VARCHAR},
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
       </if>
       <if test="nativePlace != null">
         #{nativePlace,jdbcType=VARCHAR},
@@ -177,38 +168,35 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.wlmiao.bo.StudentInformationExample" resultType="java.lang.Long">
-    select count(*) from student_information
+  <select id="countByExample" parameterType="com.wlmiao.bo.TeacherMainExample" resultType="java.lang.Long">
+    select count(*) from teacher_main
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update student_information
+    update teacher_main
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.studentNo != null">
-        student_no = #{record.studentNo,jdbcType=VARCHAR},
+      <if test="record.teacherNo != null">
+        teacher_no = #{record.teacherNo,jdbcType=VARCHAR},
       </if>
-      <if test="record.studentName != null">
-        student_name = #{record.studentName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.classNo != null">
-        class_no = #{record.classNo,jdbcType=VARCHAR},
+      <if test="record.teacherName != null">
+        teacher_name = #{record.teacherName,jdbcType=VARCHAR},
       </if>
       <if test="record.sex != null">
         sex = #{record.sex,jdbcType=VARCHAR},
       </if>
-      <if test="record.grade != null">
-        grade = #{record.grade,jdbcType=VARCHAR},
+      <if test="record.instituteNo != null">
+        institute_no = #{record.instituteNo,jdbcType=VARCHAR},
       </if>
-      <if test="record.politicalOutlook != null">
-        political_outlook = #{record.politicalOutlook,jdbcType=VARCHAR},
+      <if test="record.institute != null">
+        institute = #{record.institute,jdbcType=VARCHAR},
       </if>
-      <if test="record.nation != null">
-        nation = #{record.nation,jdbcType=VARCHAR},
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
       </if>
       <if test="record.nativePlace != null">
         native_place = #{record.nativePlace,jdbcType=VARCHAR},
@@ -222,44 +210,40 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update student_information
+    update teacher_main
     set id = #{record.id,jdbcType=BIGINT},
-      student_no = #{record.studentNo,jdbcType=VARCHAR},
-      student_name = #{record.studentName,jdbcType=VARCHAR},
-      class_no = #{record.classNo,jdbcType=VARCHAR},
+      teacher_no = #{record.teacherNo,jdbcType=VARCHAR},
+      teacher_name = #{record.teacherName,jdbcType=VARCHAR},
       sex = #{record.sex,jdbcType=VARCHAR},
-      grade = #{record.grade,jdbcType=VARCHAR},
-      political_outlook = #{record.politicalOutlook,jdbcType=VARCHAR},
-      nation = #{record.nation,jdbcType=VARCHAR},
+      institute_no = #{record.instituteNo,jdbcType=VARCHAR},
+      institute = #{record.institute,jdbcType=VARCHAR},
+      title = #{record.title,jdbcType=VARCHAR},
       native_place = #{record.nativePlace,jdbcType=VARCHAR},
       identity_number = #{record.identityNumber,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.wlmiao.bo.StudentInformation">
-    update student_information
+  <update id="updateByPrimaryKeySelective" parameterType="com.wlmiao.bo.TeacherMain">
+    update teacher_main
     <set>
-      <if test="studentNo != null">
-        student_no = #{studentNo,jdbcType=VARCHAR},
+      <if test="teacherNo != null">
+        teacher_no = #{teacherNo,jdbcType=VARCHAR},
       </if>
-      <if test="studentName != null">
-        student_name = #{studentName,jdbcType=VARCHAR},
-      </if>
-      <if test="classNo != null">
-        class_no = #{classNo,jdbcType=VARCHAR},
+      <if test="teacherName != null">
+        teacher_name = #{teacherName,jdbcType=VARCHAR},
       </if>
       <if test="sex != null">
         sex = #{sex,jdbcType=VARCHAR},
       </if>
-      <if test="grade != null">
-        grade = #{grade,jdbcType=VARCHAR},
+      <if test="instituteNo != null">
+        institute_no = #{instituteNo,jdbcType=VARCHAR},
       </if>
-      <if test="politicalOutlook != null">
-        political_outlook = #{politicalOutlook,jdbcType=VARCHAR},
+      <if test="institute != null">
+        institute = #{institute,jdbcType=VARCHAR},
       </if>
-      <if test="nation != null">
-        nation = #{nation,jdbcType=VARCHAR},
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
       </if>
       <if test="nativePlace != null">
         native_place = #{nativePlace,jdbcType=VARCHAR},
@@ -270,27 +254,26 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.wlmiao.bo.StudentInformation">
-    update student_information
-    set student_no = #{studentNo,jdbcType=VARCHAR},
-      student_name = #{studentName,jdbcType=VARCHAR},
-      class_no = #{classNo,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.wlmiao.bo.TeacherMain">
+    update teacher_main
+    set teacher_no = #{teacherNo,jdbcType=VARCHAR},
+      teacher_name = #{teacherName,jdbcType=VARCHAR},
       sex = #{sex,jdbcType=VARCHAR},
-      grade = #{grade,jdbcType=VARCHAR},
-      political_outlook = #{politicalOutlook,jdbcType=VARCHAR},
-      nation = #{nation,jdbcType=VARCHAR},
+      institute_no = #{instituteNo,jdbcType=VARCHAR},
+      institute = #{institute,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
       native_place = #{nativePlace,jdbcType=VARCHAR},
       identity_number = #{identityNumber,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByExampleWithRowbounds" parameterType="com.wlmiao.bo.StudentInformationExample" resultMap="BaseResultMap">
+  <select id="selectByExampleWithRowbounds" parameterType="com.wlmiao.bo.TeacherMainExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from student_information
+    from teacher_main
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
