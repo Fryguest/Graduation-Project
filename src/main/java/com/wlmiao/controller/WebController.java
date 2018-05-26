@@ -2,7 +2,6 @@ package com.wlmiao.controller;
 
 import com.wlmiao.exception.EduSysException;
 import com.wlmiao.service.IManagerService;
-import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,17 +29,18 @@ public class WebController {
      * 导入新生
      */
     @RequestMapping("/importStudent")
-    public void importStudent(
+    public String importStudent(
         @RequestParam("student_list") String studentList,
-        @RequestParam("class_number") Integer classNumber,
+        @RequestParam("class_student_number") Integer classStudentNumber,
         @RequestParam("grade") String grade,
-        HttpServletResponse response) throws IOException {
-        logger.info("get request to importStudent, studentList = {}, classNumber={}, grade = {}", studentList,
-            classNumber, grade);
+        HttpServletResponse response) {
+        logger.info("get request to importStudent, studentList = {}, class_student_number={}, grade = {}", studentList,
+            classStudentNumber, grade);
         try {
-            managerService.importStudentAndDivision(studentList, classNumber, grade, response);
+            managerService.importStudentAndDivision(studentList, classStudentNumber, grade, response);
+            return "success";
         } catch (EduSysException e) {
-            e.returnException(response);
+            return "fail";
         }
     }
 

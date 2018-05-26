@@ -10,6 +10,7 @@ import com.wlmiao.service.IManagerService;
 import com.wlmiao.util.XlsxUtil;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +38,12 @@ public class ManagerServiceImpl implements IManagerService {
 
         List<StudentMain> studentMainList = inputList.stream().map(map -> produceStudent(map, grade))
             .collect(Collectors.toList());
-
-        studentMainList.forEach(s -> studentMainMapper.insert(s));
-
         Map<String, Map<String, List<StudentMain>>> majorMap = division(studentMainList, classStudentNumber);
-
         List<ClassMain> classMainList = produceClass(majorMap, grade);
 
+        studentMainList.forEach(s -> studentMainMapper.insert(s));
         classMainList.forEach(s -> classMainMapper.insert(s));
+
     }
 
     /**
@@ -64,6 +63,10 @@ public class ManagerServiceImpl implements IManagerService {
 //                classMain.setClassName(clasName);
                 classMain.setStudentCount(map.getValue().size());
                 result.add(classMain);
+                for (Integer index = 0;index < map.getValue().size();index++) {
+                    String studentNo = grade + map.getKey() + String.format("%03d", index+1);
+                    map.getValue().get(index).setStudentNo(studentNo);
+                }
             }
         }
         return result;
@@ -73,6 +76,7 @@ public class ManagerServiceImpl implements IManagerService {
      * 生成学生信息
      */
     private StudentMain produceStudent(HashMap<String, String> map, String grade) {
+        //TODO 生成学号
         StudentMain studentMain = new StudentMain();
         studentMain.setStudentName(map.get("student_name"));
         studentMain.setSex(map.get("sex"));
@@ -82,6 +86,7 @@ public class ManagerServiceImpl implements IManagerService {
         studentMain.setMajor(map.get("major"));
         studentMain.setGrade(grade);
         studentMain.setNativePlace(map.get("native_place"));
+        studentMain.setIdentityNumber(map.get("identity_number"));
         studentMain.setGpa((float) 0);
         return studentMain;
     }
@@ -97,9 +102,9 @@ public class ManagerServiceImpl implements IManagerService {
             if (tempMap.containsKey(studentMain.getMajorNo())) {
                 tempMap.get(studentMain.getMajorNo()).add(studentMain);
             } else {
-                List<StudentMain> studentMainList = new ArrayList<>();
-                studentList.add(studentMain);
-                tempMap.put(studentMain.getMajorNo(), studentMainList);
+                List<StudentMain> tempList = new ArrayList<>();
+                tempList.add(studentMain);
+                tempMap.put(studentMain.getMajorNo(), tempList);
             }
         }
 
@@ -113,23 +118,22 @@ public class ManagerServiceImpl implements IManagerService {
 
             Map<String, List<StudentMain>> classMap = new HashMap<>();
             for (Integer index = 0; index < classNumber; index++) {
-                String s = String.format("%03d", index + 1);
+                String s = String.format("%02d", index + 1);
                 String classNo = majorNo + s;
                 classMap.put(classNo, new ArrayList<>());
             }
 
             Integer index = 0;
             for (StudentMain student : list) {
-                String s = String.format("%03d", index + 1);
+                String s = String.format("%02d", index + 1);
                 String classNo = majorNo + s;
                 classMap.get(classNo).add(student);
-                index = index % classNumber;
+                index = (index +1)% classNumber;
                 student.setClassNo(classNo);
             }
 
             studentMap.put(majorNo, classMap);
         }
-
         return studentMap;
     }
 
