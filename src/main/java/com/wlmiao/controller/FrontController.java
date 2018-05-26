@@ -33,4 +33,21 @@ public class FrontController {
         model.addAttribute("taskType", FrontConstant.IMPORT_STUDENT);
         return "import_student";
     }
+
+    @RequestMapping("/uploadTrainPlanFront")
+    public String uploadTrainPlan(Model model) {
+        model.addAttribute("taskType", FrontConstant.UPLOAD_TRAIN_PLAN);
+        return "upload_train_plan";
+    }
+
+
+    @RequestMapping("/success")
+    public String success(Model model) {
+        return "success";
+    }
+
+    @RequestMapping("/fail")
+    public String fail(Model model) {
+        return "fail";
+    }
 }
