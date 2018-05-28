@@ -1,21 +1,29 @@
 package com.wlmiao.service.impl;
 
+import com.github.pagehelper.util.StringUtil;
 import com.wlmiao.bo.ClassMain;
 import com.wlmiao.bo.StudentMain;
+import com.wlmiao.bo.StudentMainExample;
+import com.wlmiao.bo.StudentMainExample.Criteria;
+import com.wlmiao.constant.ExceptionConstant;
 import com.wlmiao.dao.ClassMainMapper;
 import com.wlmiao.dao.InstituteMajorMapper;
 import com.wlmiao.dao.StudentMainMapper;
 import com.wlmiao.exception.EduSysException;
 import com.wlmiao.service.IManagerService;
 import com.wlmiao.util.XlsxUtil;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +54,56 @@ public class ManagerServiceImpl implements IManagerService {
 
     }
 
+    @Override
+    public void downloadStudent(String majorNo, String grade, HttpServletResponse response) throws EduSysException {
+        StudentMainExample example = new StudentMainExample();
+        Criteria criteria = example.createCriteria();
+        if (StringUtil.isNotEmpty(grade)) {
+            criteria.andGradeEqualTo(grade);
+        }
+        if (StringUtil.isNotEmpty(majorNo)) {
+            criteria.andMajorEqualTo(majorNo);
+        }
+        List<StudentMain> studentMainList = studentMainMapper.selectByExample(example);
+
+        List<String> titleList = Arrays
+            .asList(new String[]{"id", "student_no", "student_name", "class_no", "sex", "institute_no",
+                "institute", "major_no", "major", "grade", "native_place", "identity_number"});
+
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
+        Sheet sheet = xssfWorkbook.createSheet("student_list");
+        Row titleRow = sheet.createRow(0);
+        for (Integer i = 0; i < titleList.size(); i++) {
+            titleRow.createCell(i).setCellValue(titleList.get(i));
+        }
+
+        for (Integer rowNumber = 1; rowNumber <= studentMainList.size(); rowNumber++) {
+            Row row = sheet.createRow(rowNumber);
+            StudentMain student = studentMainList.get(rowNumber - 1);
+            row.createCell(0).setCellValue(student.getId());
+            row.createCell(1).setCellValue(student.getStudentNo());
+            row.createCell(2).setCellValue(student.getStudentName());
+            row.createCell(3).setCellValue(student.getClassNo());
+            row.createCell(4).setCellValue(student.getSex());
+            row.createCell(5).setCellValue(student.getInstituteNo());
+            row.createCell(6).setCellValue(student.getInstitute());
+            row.createCell(7).setCellValue(student.getMajorNo());
+            row.createCell(8).setCellValue(student.getMajor());
+            row.createCell(9).setCellValue(student.getGrade());
+            row.createCell(10).setCellValue(student.getNativePlace());
+            row.createCell(11).setCellValue(student.getIdentityNumber());
+        }
+
+        try {
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=studentlist.xlsx");
+            xssfWorkbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
+        }
+
+    }
+
     /**
      * 生成班级
      */
@@ -63,8 +121,8 @@ public class ManagerServiceImpl implements IManagerService {
 //                classMain.setClassName(clasName);
                 classMain.setStudentCount(map.getValue().size());
                 result.add(classMain);
-                for (Integer index = 0;index < map.getValue().size();index++) {
-                    String studentNo = grade + map.getKey() + String.format("%03d", index+1);
+                for (Integer index = 0; index < map.getValue().size(); index++) {
+                    String studentNo = grade + map.getKey() + String.format("%03d", index + 1);
                     map.getValue().get(index).setStudentNo(studentNo);
                 }
             }
@@ -128,7 +186,7 @@ public class ManagerServiceImpl implements IManagerService {
                 String s = String.format("%02d", index + 1);
                 String classNo = majorNo + s;
                 classMap.get(classNo).add(student);
-                index = (index +1)% classNumber;
+                index = (index + 1) % classNumber;
                 student.setClassNo(classNo);
             }
 

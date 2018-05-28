@@ -8,4 +8,6 @@ public interface IManagerService {
 
     void importStudentAndDivision(String studentList, Integer classNumber, String grade, HttpServletResponse response)
         throws EduSysException;
+
+    void downloadStudent(String majorNo, String grade, HttpServletResponse response) throws EduSysException;
 }

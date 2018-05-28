@@ -6,4 +6,5 @@ public class FrontConstant {
 
     public static Integer IMPORT_STUDENT = 30000;
     public static Integer UPLOAD_TRAIN_PLAN = 30001;
+    public static Integer DOWNLOAD_STUDENT_LIST = 30002;
 }

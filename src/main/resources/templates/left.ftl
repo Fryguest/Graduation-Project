@@ -54,6 +54,12 @@
             上传培养计划
           </a>
         </li>
+        <li <#if taskType?? && taskType == 30002>class="active"</#if>>
+          <a href="/downloadStudentFront">
+            <i class="icon-double-angle-right"></i>
+            下载学生名单
+          </a>
+        </li>
       </ul>
     </li>
     <li>

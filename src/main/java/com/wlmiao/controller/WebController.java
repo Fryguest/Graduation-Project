@@ -2,6 +2,7 @@ package com.wlmiao.controller;
 
 import com.wlmiao.exception.EduSysException;
 import com.wlmiao.service.IManagerService;
+import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +30,8 @@ public class WebController {
      * 导入新生
      */
     @RequestMapping("/importStudent")
-    public String importStudent(
-        @RequestParam("student_list") String studentList,
-        @RequestParam("class_student_number") Integer classStudentNumber,
-        @RequestParam("grade") String grade,
+    public String importStudent(@RequestParam("student_list") String studentList,
+        @RequestParam("class_student_number") Integer classStudentNumber, @RequestParam("grade") String grade,
         HttpServletResponse response) {
         logger.info("get request to importStudent, studentList = {}, class_student_number={}, grade = {}", studentList,
             classStudentNumber, grade);
@@ -43,5 +42,34 @@ public class WebController {
             return "fail";
         }
     }
+
+    /**
+     * 下载学生名单
+     */
+    @RequestMapping("/downloadStudent")
+    public void downloadStudent(@RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
+        HttpServletResponse response) throws IOException {
+        try {
+            managerService.downloadStudent(majorNo, grade, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
+
+    /**
+     * 上传培养计划
+     */
+    @RequestMapping("/uploadTrainPlan")
+    public String uploadTrainPlan(@RequestParam("train_plan") String trainPlan,
+        @RequestParam("major") String major, @RequestParam("grade") String grade,
+        HttpServletResponse response) {
+        //TODO 设计培养计划样例
+        try {
+            return "success";
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
 
 }

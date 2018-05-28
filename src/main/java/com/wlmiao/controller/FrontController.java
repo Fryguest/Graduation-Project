@@ -40,6 +40,11 @@ public class FrontController {
         return "upload_train_plan";
     }
 
+    @RequestMapping("/downloadStudentFront")
+    public String downloadStudentFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.DOWNLOAD_STUDENT_LIST);
+        return "download_student";
+    }
 
     @RequestMapping("/success")
     public String success(Model model) {
