@@ -15,6 +15,10 @@ public class ClassMain implements Serializable {
 
     private String headTeacher;
 
+    private String majorNo;
+
+    private String major;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -65,6 +69,22 @@ public class ClassMain implements Serializable {
         this.headTeacher = headTeacher == null ? null : headTeacher.trim();
     }
 
+    public String getMajorNo() {
+        return majorNo;
+    }
+
+    public void setMajorNo(String majorNo) {
+        this.majorNo = majorNo == null ? null : majorNo.trim();
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major == null ? null : major.trim();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -77,6 +97,8 @@ public class ClassMain implements Serializable {
         sb.append(", className=").append(className);
         sb.append(", studentCount=").append(studentCount);
         sb.append(", headTeacher=").append(headTeacher);
+        sb.append(", majorNo=").append(majorNo);
+        sb.append(", major=").append(major);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

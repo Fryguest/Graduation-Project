@@ -72,13 +72,40 @@ public class WebController {
     }
 
     /**
+     * 下载班级列表
+     */
+    @RequestMapping("/downloadClass")
+    public void downloadClass(@RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
+        HttpServletResponse response) throws IOException {
+        try {
+            managerService.downloadClass(majorNo, grade, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
+
+    /**
+     * 教师分配
+     */
+    @RequestMapping("/teacherAssignment")
+    public String teacherAssignment(@RequestParam("teacher") String teacher, HttpServletResponse response) {
+        //TODO
+        try {
+            return "success";
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
+
+    /**
      * 专业分流
      */
     @RequestMapping("/professionalDiversion")
     public String professionalDiversion(@RequestParam("professional_diversion") String professionalDiversionTable,
+        @RequestParam("class_student_number") Integer classStudentNumber, @RequestParam("grade") String grade,
         HttpServletResponse response) throws IOException {
         try {
-            managerService.professionalDiversion(professionalDiversionTable, response);
+            managerService.professionalDiversion(professionalDiversionTable, classStudentNumber, grade, response);
             return "success";
         } catch (EduSysException e) {
             return "fail";

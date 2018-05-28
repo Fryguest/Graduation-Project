@@ -2,6 +2,7 @@ package com.wlmiao.service.impl;
 
 import com.github.pagehelper.util.StringUtil;
 import com.wlmiao.bo.ClassMain;
+import com.wlmiao.bo.ClassMainExample;
 import com.wlmiao.bo.InstituteMajor;
 import com.wlmiao.bo.InstituteMajorExample;
 import com.wlmiao.bo.StudentMain;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -48,7 +50,7 @@ public class ManagerServiceImpl implements IManagerService {
 
         List<StudentMain> studentMainList = inputList.stream().map(map -> produceStudent(map, grade))
             .collect(Collectors.toList());
-        Map<String, Map<String, List<StudentMain>>> majorMap = division(studentMainList, classStudentNumber);
+        Map<String, Map<String, List<StudentMain>>> majorMap = division(studentMainList, classStudentNumber, grade);
         List<ClassMain> classMainList = produceClass(majorMap, grade);
 
         studentMainList.forEach(s -> studentMainMapper.insert(s));
@@ -82,7 +84,7 @@ public class ManagerServiceImpl implements IManagerService {
         for (Integer rowNumber = 1; rowNumber <= studentMainList.size(); rowNumber++) {
             Row row = sheet.createRow(rowNumber);
             StudentMain student = studentMainList.get(rowNumber - 1);
-            row.createCell(0).setCellValue(student.getId());
+            row.createCell(0).setCellValue(rowNumber);
             row.createCell(1).setCellValue(student.getStudentNo());
             row.createCell(2).setCellValue(student.getStudentName());
             row.createCell(3).setCellValue(student.getClassNo());
@@ -103,12 +105,55 @@ public class ManagerServiceImpl implements IManagerService {
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
         }
-
     }
 
     @Override
-    public void professionalDiversion(String professionalDiversionTable, HttpServletResponse response)
-        throws EduSysException {
+    public void downloadClass(String majorNo, String grade, HttpServletResponse response) throws EduSysException {
+        ClassMainExample example = new ClassMainExample();
+        ClassMainExample.Criteria criteria = example.createCriteria();
+        if (StringUtil.isNotEmpty(majorNo)) {
+            criteria.andMajorNoEqualTo(majorNo);
+        }
+        if (StringUtil.isNotEmpty(grade)) {
+            criteria.andGradeEqualTo(grade);
+        }
+        List<ClassMain> classMainList = classMainMapper.selectByExample(example);
+
+        List<String> titleList = Arrays
+            .asList(new String[]{"id", "class_no", "grade", "student_count", "head_teacher", "major_no", "major"});
+
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
+        Sheet sheet = xssfWorkbook.createSheet("class_list");
+        Row titleRow = sheet.createRow(0);
+        for (Integer i = 0; i < titleList.size(); i++) {
+            titleRow.createCell(i).setCellValue(titleList.get(i));
+        }
+
+        for (Integer rowNumber = 1; rowNumber <= classMainList.size(); rowNumber++) {
+            Row row = sheet.createRow(rowNumber);
+            ClassMain classMain = classMainList.get(rowNumber - 1);
+            row.createCell(0).setCellValue(rowNumber);
+            row.createCell(1).setCellValue(classMain.getClassNo());
+            row.createCell(2).setCellValue(classMain.getGrade());
+            row.createCell(3).setCellValue(classMain.getStudentCount());
+            row.createCell(4).setCellValue(classMain.getHeadTeacher() == null ? "未分配" : classMain.getHeadTeacher());
+            row.createCell(5).setCellValue(classMain.getMajorNo());
+            row.createCell(6).setCellValue(classMain.getMajor());
+        }
+
+        try {
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=classlist.xlsx");
+            xssfWorkbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
+        }
+    }
+
+
+    @Override
+    public void professionalDiversion(String professionalDiversionTable, Integer classStudentNumber, String grade,
+        HttpServletResponse response) throws EduSysException {
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(professionalDiversionTable);
 
         List<InstituteMajor> instituteMajorList = instituteMajorMapper.selectByExample(new InstituteMajorExample());
@@ -117,16 +162,31 @@ public class ManagerServiceImpl implements IManagerService {
             instituteMajorMap.put(instituteMajor.getMajorNo(), instituteMajor.getMajor());
         }
 
+        List<StudentMain> studentMainList = new ArrayList<>();
         for (HashMap<String, String> map : inputList) {
             StudentMainExample example = new StudentMainExample();
             example.createCriteria().andStudentNoEqualTo(map.get("student_no"));
 
-            StudentMain studentMain = new StudentMain();
+            List<StudentMain> selectList = studentMainMapper.selectByExample(example);
+            if (CollectionUtils.isEmpty(selectList)) {
+                continue;
+            }
+
+            StudentMain studentMain = selectList.get(0);
             studentMain.setMajorNo(map.get("major_no"));
             studentMain.setMajor(instituteMajorMap.get(map.get("major_no")));
-
-            studentMainMapper.updateByExampleSelective(studentMain, example);
+            studentMainList.add(studentMain);
         }
+
+        ClassMainExample example = new ClassMainExample();
+        example.createCriteria().andGradeEqualTo(grade);
+        classMainMapper.deleteByExample(example);
+
+        Map<String, Map<String, List<StudentMain>>> majorMap = division(studentMainList, classStudentNumber, grade);
+        List<ClassMain> classMainList = produceClass(majorMap, grade);
+
+        studentMainList.forEach(s -> studentMainMapper.updateByPrimaryKeySelective(s));
+        classMainList.forEach(s -> classMainMapper.insert(s));
     }
 
     /**
@@ -135,6 +195,12 @@ public class ManagerServiceImpl implements IManagerService {
     private List<ClassMain> produceClass(Map<String, Map<String, List<StudentMain>>> majorMap, String grade) {
         List<ClassMain> result = new ArrayList<>();
 
+        List<InstituteMajor> instituteMajorList = instituteMajorMapper.selectByExample(new InstituteMajorExample());
+        HashMap<String, String> instituteMajorMap = new HashMap<>();
+        for (InstituteMajor instituteMajor : instituteMajorList) {
+            instituteMajorMap.put(instituteMajor.getMajorNo(), instituteMajor.getMajor());
+        }
+
         for (Map.Entry<String, Map<String, List<StudentMain>>> entry : majorMap.entrySet()) {
             String majorNo = entry.getKey();
             Map<String, List<StudentMain>> classMap = entry.getValue();
@@ -142,11 +208,13 @@ public class ManagerServiceImpl implements IManagerService {
                 ClassMain classMain = new ClassMain();
                 classMain.setGrade(grade);
                 classMain.setClassNo(map.getKey());
+                classMain.setMajorNo(majorNo);
+                classMain.setMajor(instituteMajorMap.get(majorNo));
                 //TODO 生成班级名
                 classMain.setStudentCount(map.getValue().size());
                 result.add(classMain);
                 for (Integer index = 0; index < map.getValue().size(); index++) {
-                    String studentNo = grade + map.getKey() + String.format("%03d", index + 1);
+                    String studentNo = map.getKey() + String.format("%03d", index + 1);
                     map.getValue().get(index).setStudentNo(studentNo);
                 }
             }
@@ -177,7 +245,7 @@ public class ManagerServiceImpl implements IManagerService {
      * 分班
      */
     private Map<String, Map<String, List<StudentMain>>> division(List<StudentMain> studentList,
-        Integer classStudentNumber) {
+        Integer classStudentNumber, String grade) {
         Map<String, Map<String, List<StudentMain>>> studentMap = new HashMap<>();
         Map<String, List<StudentMain>> tempMap = new HashMap<>();
         for (StudentMain studentMain : studentList) {
@@ -201,14 +269,14 @@ public class ManagerServiceImpl implements IManagerService {
             Map<String, List<StudentMain>> classMap = new HashMap<>();
             for (Integer index = 0; index < classNumber; index++) {
                 String s = String.format("%02d", index + 1);
-                String classNo = majorNo + s;
+                String classNo = grade + majorNo + s;
                 classMap.put(classNo, new ArrayList<>());
             }
 
             Integer index = 0;
             for (StudentMain student : list) {
                 String s = String.format("%02d", index + 1);
-                String classNo = majorNo + s;
+                String classNo = grade + majorNo + s;
                 classMap.get(classNo).add(student);
                 index = (index + 1) % classNumber;
                 student.setClassNo(classNo);

@@ -11,5 +11,8 @@ public interface IManagerService {
 
     void downloadStudent(String majorNo, String grade, HttpServletResponse response) throws EduSysException;
 
-    void professionalDiversion(String professionalDiversionTable, HttpServletResponse response) throws EduSysException;
+    void downloadClass(String majorNo, String grade, HttpServletResponse response) throws EduSysException;
+
+    void professionalDiversion(String professionalDiversionTable, Integer classStudentNumber, String grade,
+        HttpServletResponse response) throws EduSysException;
 }

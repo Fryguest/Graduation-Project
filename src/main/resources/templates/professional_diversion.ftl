@@ -92,13 +92,20 @@
                   <div class="space-4"></div>
                 </div>
 
-<#--                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 年级 </label>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right"> 班级人数 </label>
                   <div class="col-sm-6">
                     <textarea class="form-control" id="form-field-8" name="class_student_number"
                               rows="1"></textarea>
                   </div>
-                </div>-->
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right"> 年级 </label>
+                  <div class="col-sm-6">
+                    <textarea class="form-control" id="form-field-8" name="grade" rows="1"></textarea>
+                  </div>
+                </div>
               </div>
 
               <div class="clearfix form-actions">

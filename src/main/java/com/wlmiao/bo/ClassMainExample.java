@@ -503,6 +503,146 @@ public class ClassMainExample {
             addCriterion("head_teacher not between", value1, value2, "headTeacher");
             return (Criteria) this;
         }
+
+        public Criteria andMajorNoIsNull() {
+            addCriterion("major_no is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoIsNotNull() {
+            addCriterion("major_no is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoEqualTo(String value) {
+            addCriterion("major_no =", value, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoNotEqualTo(String value) {
+            addCriterion("major_no <>", value, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoGreaterThan(String value) {
+            addCriterion("major_no >", value, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoGreaterThanOrEqualTo(String value) {
+            addCriterion("major_no >=", value, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoLessThan(String value) {
+            addCriterion("major_no <", value, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoLessThanOrEqualTo(String value) {
+            addCriterion("major_no <=", value, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoLike(String value) {
+            addCriterion("major_no like", value, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoNotLike(String value) {
+            addCriterion("major_no not like", value, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoIn(List<String> values) {
+            addCriterion("major_no in", values, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoNotIn(List<String> values) {
+            addCriterion("major_no not in", values, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoBetween(String value1, String value2) {
+            addCriterion("major_no between", value1, value2, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNoNotBetween(String value1, String value2) {
+            addCriterion("major_no not between", value1, value2, "majorNo");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorIsNull() {
+            addCriterion("major is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorIsNotNull() {
+            addCriterion("major is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorEqualTo(String value) {
+            addCriterion("major =", value, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNotEqualTo(String value) {
+            addCriterion("major <>", value, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorGreaterThan(String value) {
+            addCriterion("major >", value, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorGreaterThanOrEqualTo(String value) {
+            addCriterion("major >=", value, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorLessThan(String value) {
+            addCriterion("major <", value, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorLessThanOrEqualTo(String value) {
+            addCriterion("major <=", value, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorLike(String value) {
+            addCriterion("major like", value, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNotLike(String value) {
+            addCriterion("major not like", value, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorIn(List<String> values) {
+            addCriterion("major in", values, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNotIn(List<String> values) {
+            addCriterion("major not in", values, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorBetween(String value1, String value2) {
+            addCriterion("major between", value1, value2, "major");
+            return (Criteria) this;
+        }
+
+        public Criteria andMajorNotBetween(String value1, String value2) {
+            addCriterion("major not between", value1, value2, "major");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

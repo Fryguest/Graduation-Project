@@ -112,7 +112,7 @@
                 <div class="col-md-offset-3 col-md-9">
                   <button class="btn btn-info" type="submit">
                     <i class="icon-ok bigger-110"></i>
-                    导出
+                    导入
                   </button>
                   &nbsp; &nbsp; &nbsp;
                   <button class="btn" type="reset">

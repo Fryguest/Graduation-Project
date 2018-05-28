@@ -3,13 +3,15 @@ package com.wlmiao.dao;
 import com.wlmiao.bo.ClassMain;
 import com.wlmiao.bo.ClassMainExample;
 import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
-import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface ClassMainMapper {
     long countByExample(ClassMainExample example);
+
+    int deleteByExample(ClassMainExample example);
 
     int deleteByPrimaryKey(Long id);
 
