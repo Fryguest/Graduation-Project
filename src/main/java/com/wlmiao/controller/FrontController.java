@@ -41,9 +41,15 @@ public class FrontController {
     }
 
     @RequestMapping("/downloadStudentFront")
-    public String downloadStudentFront(Model model) {
+    public String downloadStudent(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_STUDENT_LIST);
         return "download_student";
+    }
+
+    @RequestMapping("/professionalDiversionFront")
+    public String professionalDiversion(Model model) {
+        model.addAttribute("taskType", FrontConstant.PROFESSIONAL_DIVERSION);
+        return "professional_diversion";
     }
 
     @RequestMapping("/success")

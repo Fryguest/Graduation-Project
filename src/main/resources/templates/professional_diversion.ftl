@@ -60,14 +60,14 @@
       <div class="page-content">
         <div class="page-header">
           <h1>
-            导入新生名单
+            专业分流
           </h1>
         </div><!-- /.page-header -->
 
         <div class="row">
           <div class="col-xs-12">
             <!-- CONTENT BEGINS -->
-            <form class="form-horizontal" role="form" action="/importStudent" method="post">
+            <form class="form-horizontal" role="form" action="/professionalDiversion" method="post">
               <div class="form-group">
               <#--<input name="tasktype" type="hidden" value="${taskType}"/>-->
 
@@ -75,44 +75,37 @@
                   <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 任务类型 </label>
                   <div class="col-sm-9">
                     <input readonly="" type="text" class="col-xs-10 col-sm-5" id="form-input-readonly"
-                           value="导入新生名单"/>
+                           value="专业分流"/>
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 新生名单 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 专业分流名单 </label>
                   <div class="col-sm-6">
-                    <input id="student_list" name="student_list" type="hidden"/>
-                    <div class="dropzone" data-val="student_list">
+                    <input id="professional_diversion" name="professional_diversion" type="hidden"/>
+                    <div class="dropzone" data-val="professional_diversion">
                       <div class="fallback">
-                        <input name="student_list" type="file"/>
+                        <input name="professional_diversion" type="file"/>
                       </div>
                     </div>
                   </div>
                   <div class="space-4"></div>
                 </div>
 
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 班级人数 </label>
+<#--                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right"> 年级 </label>
                   <div class="col-sm-6">
                     <textarea class="form-control" id="form-field-8" name="class_student_number"
                               rows="1"></textarea>
                   </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 年级 </label>
-                  <div class="col-sm-6">
-                    <textarea class="form-control" id="form-field-8" name="grade" rows="1"></textarea>
-                  </div>
-                </div>
+                </div>-->
               </div>
 
               <div class="clearfix form-actions">
                 <div class="col-md-offset-3 col-md-9">
                   <button class="btn btn-info" type="submit">
                     <i class="icon-ok bigger-110"></i>
-                    导出
+                    开始
                   </button>
                   &nbsp; &nbsp; &nbsp;
                   <button class="btn" type="reset">

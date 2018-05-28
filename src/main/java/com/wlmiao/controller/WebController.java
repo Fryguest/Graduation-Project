@@ -71,5 +71,17 @@ public class WebController {
         }
     }
 
-
+    /**
+     * 专业分流
+     */
+    @RequestMapping("/professionalDiversion")
+    public String professionalDiversion(@RequestParam("professional_diversion") String professionalDiversionTable,
+        HttpServletResponse response) throws IOException {
+        try {
+            managerService.professionalDiversion(professionalDiversionTable, response);
+            return "success";
+        } catch (EduSysException e) {
+            return "fail";
+        }
+    }
 }

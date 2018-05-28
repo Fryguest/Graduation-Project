@@ -60,6 +60,12 @@
             下载学生名单
           </a>
         </li>
+        <li <#if taskType?? && taskType == 30003>class="active"</#if>>
+          <a href="/professionalDiversionFront">
+            <i class="icon-double-angle-right"></i>
+            专业分流
+          </a>
+        </li>
       </ul>
     </li>
     <li>

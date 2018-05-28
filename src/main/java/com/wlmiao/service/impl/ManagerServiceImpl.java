@@ -2,6 +2,8 @@ package com.wlmiao.service.impl;
 
 import com.github.pagehelper.util.StringUtil;
 import com.wlmiao.bo.ClassMain;
+import com.wlmiao.bo.InstituteMajor;
+import com.wlmiao.bo.InstituteMajorExample;
 import com.wlmiao.bo.StudentMain;
 import com.wlmiao.bo.StudentMainExample;
 import com.wlmiao.bo.StudentMainExample.Criteria;
@@ -104,6 +106,29 @@ public class ManagerServiceImpl implements IManagerService {
 
     }
 
+    @Override
+    public void professionalDiversion(String professionalDiversionTable, HttpServletResponse response)
+        throws EduSysException {
+        List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(professionalDiversionTable);
+
+        List<InstituteMajor> instituteMajorList = instituteMajorMapper.selectByExample(new InstituteMajorExample());
+        HashMap<String, String> instituteMajorMap = new HashMap<>();
+        for (InstituteMajor instituteMajor : instituteMajorList) {
+            instituteMajorMap.put(instituteMajor.getMajorNo(), instituteMajor.getMajor());
+        }
+
+        for (HashMap<String, String> map : inputList) {
+            StudentMainExample example = new StudentMainExample();
+            example.createCriteria().andStudentNoEqualTo(map.get("student_no"));
+
+            StudentMain studentMain = new StudentMain();
+            studentMain.setMajorNo(map.get("major_no"));
+            studentMain.setMajor(instituteMajorMap.get(map.get("major_no")));
+
+            studentMainMapper.updateByExampleSelective(studentMain, example);
+        }
+    }
+
     /**
      * 生成班级
      */
@@ -118,7 +143,6 @@ public class ManagerServiceImpl implements IManagerService {
                 classMain.setGrade(grade);
                 classMain.setClassNo(map.getKey());
                 //TODO 生成班级名
-//                classMain.setClassName(clasName);
                 classMain.setStudentCount(map.getValue().size());
                 result.add(classMain);
                 for (Integer index = 0; index < map.getValue().size(); index++) {
@@ -134,7 +158,6 @@ public class ManagerServiceImpl implements IManagerService {
      * 生成学生信息
      */
     private StudentMain produceStudent(HashMap<String, String> map, String grade) {
-        //TODO 生成学号
         StudentMain studentMain = new StudentMain();
         studentMain.setStudentName(map.get("student_name"));
         studentMain.setSex(map.get("sex"));
@@ -148,6 +171,7 @@ public class ManagerServiceImpl implements IManagerService {
         studentMain.setGpa((float) 0);
         return studentMain;
     }
+
 
     /**
      * 分班
