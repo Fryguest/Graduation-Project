@@ -60,62 +60,66 @@
             <div class="page-content">
                 <div class="page-header">
                     <h1>
-                        上传培养计划
+                        班主任分配
                     </h1>
                 </div><!-- /.page-header -->
 
                 <div class="row">
                     <div class="col-xs-12">
                         <!-- CONTENT BEGINS -->
-                        <form class="form-horizontal" role="form" action="/uploadTrainPlan" method="post">
+                        <form class="form-horizontal" role="form" action="/distributionTeacher" method="post">
                             <div class="form-group">
                             <#--<input name="tasktype" type="hidden" value="${taskType}"/>-->
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">
-                                        任务类型 </label>
+                                    <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 任务类型 </label>
                                     <div class="col-sm-9">
-                                        <input readonly="" type="text" class="col-xs-10 col-sm-5"
-                                               id="form-input-readonly" value="上传培养计划"/>
+                                        <input readonly="" type="text" class="col-xs-10 col-sm-5" id="form-input-readonly"
+                                               value="班主任分配"/>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label no-padding-right"> 培养计划 </label>
+                                    <label class="col-sm-3 control-label no-padding-right"> 教师名单 </label>
                                     <div class="col-sm-6">
-                                        <input id="student_list" name="train_plan" type="hidden"/>
-                                        <div class="dropzone" data-val="train_plan">
+                                        <input id="teacher_list" name="teacher_list" type="hidden"/>
+                                        <div class="dropzone" data-val="teacher_list">
                                             <div class="fallback">
-                                                <input name="train_plan" type="file"/>
+                                                <input name="teacher_list" type="file"/>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="space-4"></div>
                                 </div>
 
+
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label no-padding-right"> 选择专业 </label>
+                                    <label class="col-sm-3 control-label no-padding-right"> 年级 </label>
                                     <div class="col-sm-6">
-                                        <textarea class="form-control" id="form-field-8" name="major"
-                                                  rows="1"></textarea>
+                                        <textarea class="form-control" id="form-field-8" name="grade" rows="1"></textarea>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label no-padding-right"> 选择年级 </label>
+                                    <label class="col-sm-3 control-label no-padding-right"> 专业 </label>
                                     <div class="col-sm-6">
-                                        <textarea class="form-control" id="form-field-8" name="grade"
-                                                  rows="1"></textarea>
+                                        <textarea class="form-control" id="form-field-8" name="major_no" rows="1"></textarea>
                                     </div>
                                 </div>
 
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label no-padding-right"> 是否随机分配 </label>
+                                    <div class="col-sm-6">
+                                        <textarea class="form-control" id="form-field-8" name="random" rows="1"></textarea>
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="clearfix form-actions">
                                 <div class="col-md-offset-3 col-md-9">
                                     <button class="btn btn-info" type="submit">
                                         <i class="icon-ok bigger-110"></i>
-                                        上传
+                                        导入
                                     </button>
                                     &nbsp; &nbsp; &nbsp;
                                     <button class="btn" type="reset">

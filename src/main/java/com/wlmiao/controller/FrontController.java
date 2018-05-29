@@ -56,6 +56,12 @@ public class FrontController {
         return "professional_diversion";
     }
 
+    @RequestMapping("/distributionTeacherFront")
+    public String distributionTeacherFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.DISTRIBUTION_TEACHER);
+        return "distribution_teacher";
+    }
+
     @RequestMapping("/success")
     public String success(Model model) {
         return "success";
