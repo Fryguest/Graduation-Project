@@ -1,15 +1,21 @@
 package com.wlmiao.controller;
 
+import com.wlmiao.bo.StudentMain;
+import com.wlmiao.bo.StudentMainExample;
+import com.wlmiao.bo.TeacherMain;
+import com.wlmiao.bo.TeacherMainExample;
+import com.wlmiao.dao.StudentMainMapper;
+import com.wlmiao.dao.TeacherMainMapper;
 import com.wlmiao.exception.EduSysException;
-import com.wlmiao.model.User;
 import com.wlmiao.realm.DemoAuthorizingRealm;
 import com.wlmiao.service.IManagerService;
 
 import java.io.IOException;
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,26 +31,15 @@ public class WebController {
 
     @Autowired
     private IManagerService managerService;
+    @Autowired
+    private TeacherMainMapper teacherMainMapper;
+    @Autowired
+    private StudentMainMapper studentMainMapper;
 
     @RequestMapping("/ping")
     @ResponseBody
     public String hello() {
         return "hello world";
-    }
-
-
-    /**
-     * test
-     */
-    @RequestMapping("/test")
-    @ResponseBody
-    public String test() {
-        Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
-        if (currentUser == null || currentUser.getPrincipal() == null) {
-            return "";
-        }
-        DemoAuthorizingRealm.ShiroUser shiroUser = (DemoAuthorizingRealm.ShiroUser) currentUser.getPrincipal();
-        return shiroUser.getUsername().toString();
     }
 
     /**
@@ -82,15 +77,16 @@ public class WebController {
      */
     @RequestMapping("/uploadTrainPlan")
     public String uploadTrainPlan(@RequestParam("train_plan") String trainPlan,
-                                  @RequestParam("major") String major, @RequestParam("grade") String grade,
+                                  @RequestParam("major") String major,
                                   HttpServletResponse response) {
-        //TODO 设计培养计划样例
         try {
+            managerService.uploadTrainPlan(trainPlan, major, response);
             return "success";
         } catch (Exception e) {
             return "fail";
         }
     }
+
 
     /**
      * 下载班级列表
@@ -133,6 +129,38 @@ public class WebController {
         } catch (EduSysException e) {
             return "fail";
         }
+    }
+
+
+    private TeacherMain getCurrentTeacher() {
+        String userName = getUserName();
+        TeacherMainExample example = new TeacherMainExample();
+        example.createCriteria().andTeacherNoEqualTo(userName);
+        List<TeacherMain> teacherMainList = teacherMainMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(teacherMainList)) {
+            return null;
+        }
+        return teacherMainList.get(0);
+    }
+
+    private StudentMain getCurrentStudent() {
+        String userName = getUserName();
+        StudentMainExample example = new StudentMainExample();
+        example.createCriteria().andStudentNoEqualTo(userName);
+        List<StudentMain> studentMainList = studentMainMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(studentMainList)) {
+            return null;
+        }
+        return studentMainList.get(0);
+    }
+
+    private String getUserName() {
+        Subject currentUser = org.apache.shiro.SecurityUtils.getSubject();
+        if (currentUser == null || currentUser.getPrincipal() == null) {
+            return "";
+        }
+        DemoAuthorizingRealm.ShiroUser shiroUser = (DemoAuthorizingRealm.ShiroUser) currentUser.getPrincipal();
+        return shiroUser.getUsername().toString();
     }
 
 

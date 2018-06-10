@@ -27,13 +27,13 @@
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 10001>class="active"</#if>>
-                    <a href="">
+                    <a href="checkGPAFront">
                         <i class="icon-double-angle-right"></i>
                         查看培养计划及成绩
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 10002>class="active"</#if>>
-                    <a href="">
+                    <a href="downloadStudentTimetableFront">
                         <i class="icon-double-angle-right"></i>
                         查看课表
                     </a>
@@ -49,19 +49,19 @@
             </a>
             <ul class="submenu">
                 <li <#if taskType?? && taskType == 20000>class="active"</#if>>
-                    <a href="">
+                    <a href="downloadCourseStudentFront">
                         <i class="icon-double-angle-right"></i>
                         下载学生名单
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 20001>class="active"</#if>>
-                    <a href="">
+                    <a href="uploadCourseScoreFront">
                         <i class="icon-double-angle-right"></i>
                          上传考试成绩
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 20002>class="active"</#if>>
-                    <a href="">
+                    <a href="downloadTeacherTimetableFront">
                         <i class="icon-double-angle-right"></i>
                         查看课表
                     </a>

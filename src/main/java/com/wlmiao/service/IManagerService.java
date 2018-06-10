@@ -17,7 +17,8 @@ public interface IManagerService {
     void professionalDiversion(String professionalDiversionTable, Integer classStudentNumber, String grade,
                                HttpServletResponse response) throws EduSysException;
 
-
     void distributionTeacher(String teacherList, String majorNo, String grade, Boolean random, HttpServletResponse response)
             throws EduSysException;
+
+    void uploadTrainPlan(String trainPlan, String major, HttpServletResponse response) throws EduSysException;
 }

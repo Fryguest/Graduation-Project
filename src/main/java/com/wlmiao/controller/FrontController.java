@@ -17,17 +17,6 @@ public class FrontController {
         return "index";
     }
 
-    @RequestMapping("/teacherEndPoint")
-    public String teacherEndPoint(Model model){
-        return "teacher_end_point";
-    }
-
-    @RequestMapping("/courseChosenFront")
-    public String courseChosen(Model model){
-        model.addAttribute("taskType", FrontConstant.COURSE_CHOSEN);
-        return "course_chosen";
-    }
-
     @RequestMapping("/importStudentFront")
     public String importStudentFront(Model model) {
         model.addAttribute("taskType", FrontConstant.IMPORT_STUDENT);
@@ -45,11 +34,13 @@ public class FrontController {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_STUDENT_LIST);
         return "download_student";
     }
+
     @RequestMapping("/downloadClassFront")
     public String downloadClass(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_CLASS_LIST);
         return "download_class";
     }
+
     @RequestMapping("/professionalDiversionFront")
     public String professionalDiversion(Model model) {
         model.addAttribute("taskType", FrontConstant.PROFESSIONAL_DIVERSION);
@@ -60,6 +51,42 @@ public class FrontController {
     public String distributionTeacherFront(Model model) {
         model.addAttribute("taskType", FrontConstant.DISTRIBUTION_TEACHER);
         return "distribution_teacher";
+    }
+
+    @RequestMapping("/courseChosenFront")
+    public String courseChosenFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.COURSE_CHOSEN);
+        return "course_chosen";
+    }
+
+    @RequestMapping("/checkGPAFront")
+    public String checkGPAFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.CHECK_GPA);
+        return "check_GPA";
+    }
+
+    @RequestMapping("/downloadStudentTimetableFront")
+    public String downloadStudentTimetableFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.DOWNLOAD_STUDENT_TIMETABLE);
+        return "download_student_timetable";
+    }
+
+    @RequestMapping("/downloadCourseStudentFront")
+    public String downloadCourseStudentFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.DOWNLOAD_COURSE_STUDENT);
+        return "download_course_student";
+    }
+
+    @RequestMapping("/uploadCourseScoreFront")
+    public String uploadCourseScoreFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.UPLOAD_COURSE_SCORE);
+        return "upload_course_score";
+    }
+
+    @RequestMapping("/downloadTeacherTimetableFront")
+    public String downloadTeacherTimetableFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.DOWNLOAD_TEACHER_TIMETABLE);
+        return "download_teacher_timetable";
     }
 
     @RequestMapping("/success")

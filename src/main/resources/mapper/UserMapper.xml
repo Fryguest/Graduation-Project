@@ -25,6 +25,9 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.wlmiao.model.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into t_user (id, nickname, email, 
       pswd, create_time, modify_time, 
       last_login_time, status)
@@ -33,6 +36,9 @@
       #{lastLoginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.wlmiao.model.User">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

@@ -1,28 +1,22 @@
 package com.wlmiao.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
 import com.github.pagehelper.util.StringUtil;
-import com.wlmiao.bo.ClassMain;
-import com.wlmiao.bo.ClassMainExample;
-import com.wlmiao.bo.InstituteMajor;
-import com.wlmiao.bo.InstituteMajorExample;
-import com.wlmiao.bo.StudentMain;
-import com.wlmiao.bo.StudentMainExample;
+import com.wlmiao.bo.*;
 import com.wlmiao.bo.StudentMainExample.Criteria;
 import com.wlmiao.constant.ExceptionConstant;
-import com.wlmiao.dao.ClassMainMapper;
-import com.wlmiao.dao.InstituteMajorMapper;
-import com.wlmiao.dao.StudentMainMapper;
+import com.wlmiao.dao.*;
 import com.wlmiao.exception.EduSysException;
+import com.wlmiao.model.User;
+import com.wlmiao.model.UserRole;
 import com.wlmiao.service.IManagerService;
+import com.wlmiao.util.MD5Util;
 import com.wlmiao.util.XlsxUtil;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +27,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.wlmiao.constant.RoleConstant.STUDENT;
+import static com.wlmiao.util.MD5Util.getMD5Str;
+
 @Service
 public class ManagerServiceImpl implements IManagerService {
 
@@ -42,6 +39,12 @@ public class ManagerServiceImpl implements IManagerService {
     private ClassMainMapper classMainMapper;
     @Autowired
     private InstituteMajorMapper instituteMajorMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private UserRoleMapper userRoleMapper;
+    @Autowired
+    private TrainingPlanMapper trainingPlanMapper;
 
     @Override
     public void importStudentAndDivision(String studentListPath, Integer classStudentNumber, String grade,
@@ -58,6 +61,7 @@ public class ManagerServiceImpl implements IManagerService {
         studentMainList.forEach(s -> studentMainMapper.insert(s));
         classMainList.forEach(s -> classMainMapper.insert(s));
 
+        studentMainList.forEach(s -> insertUser(s.getStudentNo(), STUDENT));
     }
 
     @Override
@@ -206,14 +210,14 @@ public class ManagerServiceImpl implements IManagerService {
         if (random) {
             Collections.shuffle(classMainList);
             Collections.shuffle(inputList);
-            for (Integer index = 0; index < classMainList.size();index++){
+            for (Integer index = 0; index < classMainList.size(); index++) {
                 ClassMain classMain = classMainList.get(index);
-                HashMap<String,String> map = inputList.get(index % inputList.size());
+                HashMap<String, String> map = inputList.get(index % inputList.size());
                 classMain.setHeadTeacher(map.get("teacher_no"));
                 classMainMapper.updateByPrimaryKeySelective(classMain);
             }
         } else {
-            HashMap<String,String> teacherMap = new HashMap<>();
+            HashMap<String, String> teacherMap = new HashMap<>();
             for (HashMap<String, String> map : inputList) {
                 teacherMap.put(map.get("class_no"), map.get("teacher_no"));
             }
@@ -222,6 +226,40 @@ public class ManagerServiceImpl implements IManagerService {
                 classMainMapper.updateByPrimaryKeySelective(classMain);
             }
         }
+    }
+
+    /**
+     * 上传培养计划
+     */
+    public void uploadTrainPlan(String trainPlan, String majorNo, HttpServletResponse response) throws EduSysException {
+        InstituteMajorExample example = new InstituteMajorExample();
+        example.createCriteria().andMajorNoEqualTo(majorNo);
+        List<InstituteMajor> instituteMajorList = instituteMajorMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(instituteMajorList)) {
+            return ;
+        }
+
+        List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(trainPlan);
+        JSONArray jsonArray = new JSONArray();
+
+        for (HashMap<String, String> map : inputList) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("course_no", map.get("课程编号"));
+            jsonObject.put("course_name", map.get("课程名"));
+            jsonObject.put("credit", map.get("学分"));
+            jsonObject.put("course_time", map.get("修读年") + "/" + map.get("学期"));
+            jsonObject.put("examination_method", map.get("考查方式"));
+            jsonArray.add(jsonObject);
+        }
+
+        TrainingPlan trainingPlan = new TrainingPlan();
+        trainingPlan.setContent(jsonArray.toString());
+        trainingPlan.setMajorNo(majorNo);
+        trainingPlan.setMajor(instituteMajorList.get(0).getMajor());
+        trainingPlan.setInstituteNo(instituteMajorList.get(0).getInstituteNo());
+        trainingPlan.setInstitute(instituteMajorList.get(0).getInstitute());
+        trainingPlanMapper.insert(trainingPlan);
+
     }
 
 
@@ -322,4 +360,20 @@ public class ManagerServiceImpl implements IManagerService {
         return studentMap;
     }
 
+
+    public void insertUser(String userName, Long type) {
+        User user = new User();
+        user.setNickname(userName);
+        user.setPswd(getMD5Str(userName));
+        user.setCreateTime(new Date());
+        user.setStatus(true);
+        user.setModifyTime(new Date());
+
+        userMapper.insert(user);
+
+        UserRole userRole = new UserRole();
+        userRole.setUserId(user.getId());
+        userRole.setRoleId(type);
+        userRoleMapper.insert(userRole);
+    }
 }

@@ -72,7 +72,7 @@ public class DemoAuthorizingRealm extends AuthorizingRealm {
     @PostConstruct
     public void initCredentialsMatcher() {
         HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
-        credentialsMatcher.setHashAlgorithmName("SHA1");
+        credentialsMatcher.setHashAlgorithmName("MD5");
         this.setCredentialsMatcher(credentialsMatcher);
     }
 
