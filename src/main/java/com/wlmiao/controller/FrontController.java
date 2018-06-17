@@ -41,9 +41,15 @@ public class FrontController {
     }
 
     @RequestMapping("/managerdownloadStudentFront")
-    public String downloadStudent(Model model) {
+    public String managerdownloadStudentFront(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_STUDENT_LIST);
         return "download_student";
+    }
+
+    @RequestMapping("/managerdownloadTeacherFront")
+    public String managerdownloadTeacherFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.DOWNLOAD_TEACHER_LIST);
+        return "download_teacher";
     }
 
     @RequestMapping("/managerdownloadClassFront")

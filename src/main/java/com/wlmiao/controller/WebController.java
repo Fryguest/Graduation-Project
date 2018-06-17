@@ -9,11 +9,11 @@ import com.wlmiao.dao.TeacherMainMapper;
 import com.wlmiao.exception.EduSysException;
 import com.wlmiao.realm.DemoAuthorizingRealm;
 import com.wlmiao.service.IManagerService;
-
+import com.wlmiao.service.IStudentService;
+import com.wlmiao.service.ITeacherService;
 import java.io.IOException;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.CollectionUtils;
 import org.slf4j.Logger;
@@ -32,6 +32,11 @@ public class WebController {
     @Autowired
     private IManagerService managerService;
     @Autowired
+    private ITeacherService teacherService;
+    @Autowired
+    private IStudentService studentService;
+
+    @Autowired
     private TeacherMainMapper teacherMainMapper;
     @Autowired
     private StudentMainMapper studentMainMapper;
@@ -47,10 +52,10 @@ public class WebController {
      */
     @RequestMapping("/importStudent")
     public String importStudent(@RequestParam("student_list") String studentList,
-                                @RequestParam("class_student_number") Integer classStudentNumber, @RequestParam("grade") String grade,
-                                HttpServletResponse response) {
+        @RequestParam("class_student_number") Integer classStudentNumber, @RequestParam("grade") String grade,
+        HttpServletResponse response) {
         logger.info("get request to importStudent, studentList = {}, class_student_number={}, grade = {}", studentList,
-                classStudentNumber, grade);
+            classStudentNumber, grade);
         try {
             managerService.importStudentAndDivision(studentList, classStudentNumber, grade, response);
             return "success";
@@ -64,7 +69,7 @@ public class WebController {
      */
     @RequestMapping("/importTeacher")
     public String importTeacher(@RequestParam("teacher_list") String teacherList,
-                                HttpServletResponse response) {
+        HttpServletResponse response) {
         logger.info("get request to importTeacher, teacherList = {}", teacherList);
         try {
             managerService.importTeacher(teacherList, response);
@@ -79,9 +84,22 @@ public class WebController {
      */
     @RequestMapping("/downloadStudent")
     public void downloadStudent(@RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
-                                HttpServletResponse response) throws IOException {
+        HttpServletResponse response) throws IOException {
         try {
             managerService.downloadStudent(majorNo, grade, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
+
+    /**
+     * 下载教师名单
+     */
+    @RequestMapping("/downloadTeacher")
+    public void downloadTeacher(@RequestParam("institute_no") String instituteNo, HttpServletResponse response)
+        throws IOException {
+        try {
+            managerService.downloadTeacher(instituteNo, response);
         } catch (EduSysException e) {
             e.returnException(response);
         }
@@ -92,8 +110,8 @@ public class WebController {
      */
     @RequestMapping("/uploadTrainPlan")
     public String uploadTrainPlan(@RequestParam("train_plan") String trainPlan,
-                                  @RequestParam("major") String major,
-                                  HttpServletResponse response) {
+        @RequestParam("major") String major,
+        HttpServletResponse response) {
         try {
             managerService.uploadTrainPlan(trainPlan, major, response);
             return "success";
@@ -103,12 +121,13 @@ public class WebController {
     }
 
     /**
-     * 上传培养计划
+     * 教师开课
      */
     @RequestMapping("/uploadCourseInformation")
-    public String uploadCourseInformation(@RequestParam("course_information") String courseInformation, HttpServletResponse response) {
+    public String uploadCourseInformation(@RequestParam("course_information") String courseInformation,
+        @RequestParam("grage") String grade, HttpServletResponse response) {
         try {
-            managerService.uploadCourseInformation(courseInformation, response);
+            managerService.uploadCourseInformation(courseInformation, grade, response);
             return "success";
         } catch (Exception e) {
             return "fail";
@@ -120,7 +139,7 @@ public class WebController {
      */
     @RequestMapping("/downloadClass")
     public void downloadClass(@RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
-                              HttpServletResponse response) throws IOException {
+        HttpServletResponse response) throws IOException {
         try {
             managerService.downloadClass(majorNo, grade, response);
         } catch (EduSysException e) {
@@ -133,8 +152,8 @@ public class WebController {
      */
     @RequestMapping("/professionalDiversion")
     public String professionalDiversion(@RequestParam("professional_diversion") String professionalDiversionTable,
-                                        @RequestParam("class_student_number") Integer classStudentNumber, @RequestParam("grade") String grade,
-                                        HttpServletResponse response) throws IOException {
+        @RequestParam("class_student_number") Integer classStudentNumber, @RequestParam("grade") String grade,
+        HttpServletResponse response) throws IOException {
         try {
             managerService.professionalDiversion(professionalDiversionTable, classStudentNumber, grade, response);
             return "success";
@@ -148,8 +167,8 @@ public class WebController {
      */
     @RequestMapping("/distributionTeacher")
     public String distributionTeacher(@RequestParam("teacher_list") String teacherList,
-                                      @RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
-                                      @RequestParam("random") Boolean random, HttpServletResponse response) throws IOException {
+        @RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
+        @RequestParam("random") Boolean random, HttpServletResponse response) throws IOException {
         try {
             managerService.distributionTeacher(teacherList, majorNo, grade, random, response);
             return "success";
@@ -158,6 +177,59 @@ public class WebController {
         }
     }
 
+    /**
+     * 绩点查询
+     */
+    @RequestMapping("/checkGPA")
+    public String checkGPA(HttpServletResponse response) throws IOException {
+        try {
+            StudentMain studentMain = getCurrentStudent();
+            studentService.checkGPA(studentMain, response);
+            return "success";
+        } catch (EduSysException e) {
+            return "fail";
+        }
+    }
+
+    /**
+     * 下载选课表
+     */
+    @RequestMapping("/downloadCourseChosenTable")
+    public void downloadCourseChosenTable(HttpServletResponse response) throws IOException {
+        try {
+            StudentMain studentMain = getCurrentStudent();
+            studentService.downloadCourseChosenTable(studentMain, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
+
+    /**
+     * 选课
+     */
+    @RequestMapping("/courseChosen")
+    public void courseChosen(@RequestParam("course_chosen") String courseChosen, HttpServletResponse response)
+        throws IOException {
+        try {
+            StudentMain studentMain = getCurrentStudent();
+            studentService.courseChosen(studentMain, courseChosen, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
+
+    /**
+     * 下载课表
+     */
+    @RequestMapping("/downloadStudentTimetable")
+    public void downloadStudentTimetable(HttpServletResponse response) throws IOException {
+        try {
+            StudentMain studentMain = getCurrentStudent();
+            studentService.downloadStudentTimetable(studentMain, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
 
     private TeacherMain getCurrentTeacher() {
         String userName = getUserName();

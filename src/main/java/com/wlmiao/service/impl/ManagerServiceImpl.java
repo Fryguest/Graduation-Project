@@ -1,35 +1,52 @@
 package com.wlmiao.service.impl;
 
+import static com.wlmiao.constant.RoleConstant.STUDENT;
+import static com.wlmiao.constant.RoleConstant.TEACHER;
+import static com.wlmiao.util.MD5Util.getMD5Str;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
 import com.github.pagehelper.util.StringUtil;
-import com.wlmiao.bo.*;
+import com.wlmiao.bo.ClassMain;
+import com.wlmiao.bo.ClassMainExample;
+import com.wlmiao.bo.CourseMain;
+import com.wlmiao.bo.InstituteMajor;
+import com.wlmiao.bo.InstituteMajorExample;
+import com.wlmiao.bo.StudentMain;
+import com.wlmiao.bo.StudentMainExample;
 import com.wlmiao.bo.StudentMainExample.Criteria;
+import com.wlmiao.bo.TeacherMain;
+import com.wlmiao.bo.TeacherMainExample;
+import com.wlmiao.bo.TrainingPlan;
 import com.wlmiao.constant.ExceptionConstant;
-import com.wlmiao.dao.*;
+import com.wlmiao.dao.ClassMainMapper;
+import com.wlmiao.dao.InstituteMajorMapper;
+import com.wlmiao.dao.StudentMainMapper;
+import com.wlmiao.dao.TeacherMainMapper;
+import com.wlmiao.dao.TrainingPlanMapper;
+import com.wlmiao.dao.UserMapper;
+import com.wlmiao.dao.UserRoleMapper;
 import com.wlmiao.exception.EduSysException;
 import com.wlmiao.model.User;
 import com.wlmiao.model.UserRole;
 import com.wlmiao.service.IManagerService;
-import com.wlmiao.util.MD5Util;
 import com.wlmiao.util.XlsxUtil;
-
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import static com.wlmiao.constant.RoleConstant.STUDENT;
-import static com.wlmiao.constant.RoleConstant.TEACHER;
-import static com.wlmiao.util.MD5Util.getMD5Str;
 
 @Service
 public class ManagerServiceImpl implements IManagerService {
@@ -51,13 +68,13 @@ public class ManagerServiceImpl implements IManagerService {
 
     @Override
     public void importStudentAndDivision(String studentListPath, Integer classStudentNumber, String grade,
-                                         HttpServletResponse response)
-            throws EduSysException {
+        HttpServletResponse response)
+        throws EduSysException {
 
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(studentListPath);
 
         List<StudentMain> studentMainList = inputList.stream().map(map -> produceStudent(map, grade))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
         Map<String, Map<String, List<StudentMain>>> majorMap = division(studentMainList, classStudentNumber, grade);
         List<ClassMain> classMainList = produceClass(majorMap, grade);
         studentMainList.forEach(s -> studentMainMapper.insert(s));
@@ -68,9 +85,10 @@ public class ManagerServiceImpl implements IManagerService {
 
     @Override
     public void importTeacher(String teacherListPath, HttpServletResponse response)
-            throws EduSysException {
+        throws EduSysException {
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(teacherListPath);
-        List<TeacherMain> teacherMainList = inputList.stream().map(map -> produceTeacher(map)).collect(Collectors.toList());
+        List<TeacherMain> teacherMainList = inputList.stream().map(map -> produceTeacher(map))
+            .collect(Collectors.toList());
         teacherMainList.forEach(s -> teacherMainMapper.insert(s));
         teacherMainList.forEach(s -> insertUser(s.getTeacherNo(), s.getTeacherName(), TEACHER));
     }
@@ -88,8 +106,8 @@ public class ManagerServiceImpl implements IManagerService {
         List<StudentMain> studentMainList = studentMainMapper.selectByExample(example);
 
         List<String> titleList = Arrays
-                .asList(new String[]{"id", "student_no", "student_name", "class_no", "sex", "institute_no",
-                        "institute", "major_no", "major", "grade", "native_place", "identity_number"});
+            .asList(new String[]{"id", "student_no", "student_name", "class_no", "sex", "institute_no",
+                "institute", "major_no", "major", "grade", "native_place", "identity_number"});
 
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
         Sheet sheet = xssfWorkbook.createSheet("student_list");
@@ -124,6 +142,52 @@ public class ManagerServiceImpl implements IManagerService {
         }
     }
 
+
+    @Override
+    public void downloadTeacher(String instituteNo, HttpServletResponse response) throws EduSysException {
+
+        TeacherMainExample example = new TeacherMainExample();
+        TeacherMainExample.Criteria criteria = example.createCriteria();
+        if (StringUtil.isNotEmpty(instituteNo)) {
+            criteria.andInstituteNoEqualTo(instituteNo);
+        }
+        List<TeacherMain> teacherMainList = teacherMainMapper.selectByExample(example);
+
+        List<String> titleList = Arrays
+            .asList(new String[]{"id", "teacher_no", "teacher_name", "sex", "institute_no", "institute",
+                "title", "native_place", "identity_number"});
+
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
+        Sheet sheet = xssfWorkbook.createSheet("teacher_list");
+        Row titleRow = sheet.createRow(0);
+        for (Integer i = 0; i < titleList.size(); i++) {
+            titleRow.createCell(i).setCellValue(titleList.get(i));
+        }
+
+        for (Integer rowNumber = 1; rowNumber <= teacherMainList.size(); rowNumber++) {
+            Row row = sheet.createRow(rowNumber);
+            TeacherMain teacher = teacherMainList.get(rowNumber - 1);
+            row.createCell(0).setCellValue(rowNumber);
+            row.createCell(1).setCellValue(teacher.getTeacherNo());
+            row.createCell(2).setCellValue(teacher.getTeacherName());
+            row.createCell(3).setCellValue(teacher.getSex());
+            row.createCell(4).setCellValue(teacher.getInstituteNo());
+            row.createCell(5).setCellValue(teacher.getInstitute());
+            row.createCell(6).setCellValue(teacher.getTitle());
+            row.createCell(7).setCellValue(teacher.getNativePlace());
+            row.createCell(8).setCellValue(teacher.getIdentityNumber());
+        }
+
+        try {
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=studentlist.xlsx");
+            xssfWorkbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
+        }
+    }
+
+
     @Override
     public void downloadClass(String majorNo, String grade, HttpServletResponse response) throws EduSysException {
         ClassMainExample example = new ClassMainExample();
@@ -137,7 +201,7 @@ public class ManagerServiceImpl implements IManagerService {
         List<ClassMain> classMainList = classMainMapper.selectByExample(example);
 
         List<String> titleList = Arrays
-                .asList(new String[]{"id", "class_no", "grade", "student_count", "head_teacher", "major_no", "major"});
+            .asList(new String[]{"id", "class_no", "grade", "student_count", "head_teacher", "major_no", "major"});
 
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
         Sheet sheet = xssfWorkbook.createSheet("class_list");
@@ -170,7 +234,7 @@ public class ManagerServiceImpl implements IManagerService {
 
     @Override
     public void professionalDiversion(String professionalDiversionTable, Integer classStudentNumber, String grade,
-                                      HttpServletResponse response) throws EduSysException {
+        HttpServletResponse response) throws EduSysException {
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(professionalDiversionTable);
 
         List<InstituteMajor> instituteMajorList = instituteMajorMapper.selectByExample(new InstituteMajorExample());
@@ -209,8 +273,10 @@ public class ManagerServiceImpl implements IManagerService {
     /**
      * 分配教师
      */
-    public void distributionTeacher(String teacherList, String majorNo, String grade, Boolean random, HttpServletResponse response)
-            throws EduSysException {
+    @Override
+    public void distributionTeacher(String teacherList, String majorNo, String grade, Boolean random,
+        HttpServletResponse response)
+        throws EduSysException {
 
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(teacherList);
 
@@ -242,6 +308,7 @@ public class ManagerServiceImpl implements IManagerService {
     /**
      * 上传培养计划
      */
+    @Override
     public void uploadTrainPlan(String trainPlan, String majorNo, HttpServletResponse response) throws EduSysException {
         InstituteMajorExample example = new InstituteMajorExample();
         example.createCriteria().andMajorNoEqualTo(majorNo);
@@ -255,7 +322,7 @@ public class ManagerServiceImpl implements IManagerService {
 
         for (HashMap<String, String> map : inputList) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("course_no", map.get("课程编号"));
+            jsonObject.put("course_type_no", map.get("课程编号"));
             jsonObject.put("course_name", map.get("课程名"));
             jsonObject.put("credit", map.get("学分"));
             jsonObject.put("course_time", map.get("修读年") + "/" + map.get("学期"));
@@ -275,23 +342,29 @@ public class ManagerServiceImpl implements IManagerService {
     /**
      * 上传开课信息，并安排课程时间
      */
-    public void uploadCourseInformation(String courseInformationList, HttpServletResponse response) throws EduSysException {
+    @Override
+    public void uploadCourseInformation(String courseInformationList, String grade, HttpServletResponse response)
+        throws EduSysException {
 
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(courseInformationList);
 
-        List<CourseMain> courseMainList = inputList.stream().map(map -> produceCourse(map)).collect(Collectors.toList());
+        List<CourseMain> courseMainList = inputList.stream().map(map -> produceCourse(map, grade))
+            .collect(Collectors.toList());
 
     }
 
     /**
      * 生成课程
      */
-    private CourseMain produceCourse(HashMap<String, String> map) {
+    private CourseMain produceCourse(HashMap<String, String> map, String grade) {
         CourseMain courseMain = new CourseMain();
 
-        courseMain.set
-
-
+        courseMain.setCourseType(map.get("课程类型编号"));
+        courseMain.setCourseName(map.get("课程名"));
+        courseMain.setTeacherNo(map.get("教师号"));
+        courseMain.setCredit(Integer.valueOf(map.get("学分")));
+        courseMain.setCourseTime(map.get("上课时间"));
+        courseMain.setGrade(grade);
         return courseMain;
     }
 
@@ -366,7 +439,7 @@ public class ManagerServiceImpl implements IManagerService {
      * 分班
      */
     private Map<String, Map<String, List<StudentMain>>> division(List<StudentMain> studentList,
-                                                                 Integer classStudentNumber, String grade) {
+        Integer classStudentNumber, String grade) {
         Map<String, Map<String, List<StudentMain>>> studentMap = new HashMap<>();
         Map<String, List<StudentMain>> tempMap = new HashMap<>();
         for (StudentMain studentMain : studentList) {

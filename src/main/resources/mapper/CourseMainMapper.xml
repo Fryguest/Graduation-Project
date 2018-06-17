@@ -3,15 +3,19 @@
 <mapper namespace="com.wlmiao.dao.CourseMainMapper">
   <resultMap id="BaseResultMap" type="com.wlmiao.bo.CourseMain">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="course_type" jdbcType="VARCHAR" property="courseType" />
     <result column="course_no" jdbcType="VARCHAR" property="courseNo" />
     <result column="course_name" jdbcType="VARCHAR" property="courseName" />
+    <result column="course_time" jdbcType="VARCHAR" property="courseTime" />
     <result column="teacher_no" jdbcType="VARCHAR" property="teacherNo" />
+    <result column="teacher_name" jdbcType="VARCHAR" property="teacherName" />
     <result column="institute_no" jdbcType="VARCHAR" property="instituteNo" />
     <result column="credit" jdbcType="INTEGER" property="credit" />
     <result column="is_examation" jdbcType="TINYINT" property="isExamation" />
     <result column="examation_time" jdbcType="TIMESTAMP" property="examationTime" />
     <result column="examation_place" jdbcType="VARCHAR" property="examationPlace" />
     <result column="examation_invigilator" jdbcType="VARCHAR" property="examationInvigilator" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -72,8 +76,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, course_no, course_name, teacher_no, institute_no, credit, is_examation, examation_time, 
-    examation_place, examation_invigilator
+    id, course_type, course_no, course_name, course_time, teacher_no, teacher_name, institute_no,
+    credit, is_examation, examation_time, examation_place, examation_invigilator, grade
   </sql>
   <select id="selectByExample" parameterType="com.wlmiao.bo.CourseMainExample" resultMap="BaseResultMap">
     select
@@ -91,7 +95,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from course_main
     where id = #{id,jdbcType=BIGINT}
@@ -104,14 +108,16 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into course_main (course_no, course_name, teacher_no, 
-      institute_no, credit, is_examation, 
-      examation_time, examation_place, examation_invigilator
-      )
-    values (#{courseNo,jdbcType=VARCHAR}, #{courseName,jdbcType=VARCHAR}, #{teacherNo,jdbcType=VARCHAR}, 
-      #{instituteNo,jdbcType=VARCHAR}, #{credit,jdbcType=INTEGER}, #{isExamation,jdbcType=TINYINT}, 
-      #{examationTime,jdbcType=TIMESTAMP}, #{examationPlace,jdbcType=VARCHAR}, #{examationInvigilator,jdbcType=VARCHAR}
-      )
+    insert into course_main (course_type, course_no, course_name,
+    course_time, teacher_no, teacher_name,
+    institute_no, credit, is_examation,
+    examation_time, examation_place, examation_invigilator,
+    grade)
+    values (#{courseType,jdbcType=VARCHAR}, #{courseNo,jdbcType=VARCHAR}, #{courseName,jdbcType=VARCHAR},
+    #{courseTime,jdbcType=VARCHAR}, #{teacherNo,jdbcType=VARCHAR}, #{teacherName,jdbcType=VARCHAR},
+    #{instituteNo,jdbcType=VARCHAR}, #{credit,jdbcType=INTEGER}, #{isExamation,jdbcType=TINYINT},
+    #{examationTime,jdbcType=TIMESTAMP}, #{examationPlace,jdbcType=VARCHAR}, #{examationInvigilator,jdbcType=VARCHAR},
+    #{grade,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.wlmiao.bo.CourseMain">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -119,14 +125,23 @@
     </selectKey>
     insert into course_main
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="courseType != null">
+        course_type,
+      </if>
       <if test="courseNo != null">
         course_no,
       </if>
       <if test="courseName != null">
         course_name,
       </if>
+      <if test="courseTime != null">
+        course_time,
+      </if>
       <if test="teacherNo != null">
         teacher_no,
+      </if>
+      <if test="teacherName != null">
+        teacher_name,
       </if>
       <if test="instituteNo != null">
         institute_no,
@@ -146,16 +161,28 @@
       <if test="examationInvigilator != null">
         examation_invigilator,
       </if>
+      <if test="grade != null">
+        grade,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="courseType != null">
+        #{courseType,jdbcType=VARCHAR},
+      </if>
       <if test="courseNo != null">
         #{courseNo,jdbcType=VARCHAR},
       </if>
       <if test="courseName != null">
         #{courseName,jdbcType=VARCHAR},
       </if>
+      <if test="courseTime != null">
+        #{courseTime,jdbcType=VARCHAR},
+      </if>
       <if test="teacherNo != null">
         #{teacherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherName != null">
+        #{teacherName,jdbcType=VARCHAR},
       </if>
       <if test="instituteNo != null">
         #{instituteNo,jdbcType=VARCHAR},
@@ -175,6 +202,9 @@
       <if test="examationInvigilator != null">
         #{examationInvigilator,jdbcType=VARCHAR},
       </if>
+      <if test="grade != null">
+        #{grade,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.wlmiao.bo.CourseMainExample" resultType="java.lang.Long">
@@ -189,14 +219,23 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
+      <if test="record.courseType != null">
+        course_type = #{record.courseType,jdbcType=VARCHAR},
+      </if>
       <if test="record.courseNo != null">
         course_no = #{record.courseNo,jdbcType=VARCHAR},
       </if>
       <if test="record.courseName != null">
         course_name = #{record.courseName,jdbcType=VARCHAR},
       </if>
+      <if test="record.courseTime != null">
+        course_time = #{record.courseTime,jdbcType=VARCHAR},
+      </if>
       <if test="record.teacherNo != null">
         teacher_no = #{record.teacherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.teacherName != null">
+        teacher_name = #{record.teacherName,jdbcType=VARCHAR},
       </if>
       <if test="record.instituteNo != null">
         institute_no = #{record.instituteNo,jdbcType=VARCHAR},
@@ -216,6 +255,9 @@
       <if test="record.examationInvigilator != null">
         examation_invigilator = #{record.examationInvigilator,jdbcType=VARCHAR},
       </if>
+      <if test="record.grade != null">
+        grade = #{record.grade,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -224,15 +266,19 @@
   <update id="updateByExample" parameterType="map">
     update course_main
     set id = #{record.id,jdbcType=BIGINT},
-      course_no = #{record.courseNo,jdbcType=VARCHAR},
-      course_name = #{record.courseName,jdbcType=VARCHAR},
-      teacher_no = #{record.teacherNo,jdbcType=VARCHAR},
-      institute_no = #{record.instituteNo,jdbcType=VARCHAR},
-      credit = #{record.credit,jdbcType=INTEGER},
-      is_examation = #{record.isExamation,jdbcType=TINYINT},
-      examation_time = #{record.examationTime,jdbcType=TIMESTAMP},
-      examation_place = #{record.examationPlace,jdbcType=VARCHAR},
-      examation_invigilator = #{record.examationInvigilator,jdbcType=VARCHAR}
+    course_type = #{record.courseType,jdbcType=VARCHAR},
+    course_no = #{record.courseNo,jdbcType=VARCHAR},
+    course_name = #{record.courseName,jdbcType=VARCHAR},
+    course_time = #{record.courseTime,jdbcType=VARCHAR},
+    teacher_no = #{record.teacherNo,jdbcType=VARCHAR},
+    teacher_name = #{record.teacherName,jdbcType=VARCHAR},
+    institute_no = #{record.instituteNo,jdbcType=VARCHAR},
+    credit = #{record.credit,jdbcType=INTEGER},
+    is_examation = #{record.isExamation,jdbcType=TINYINT},
+    examation_time = #{record.examationTime,jdbcType=TIMESTAMP},
+    examation_place = #{record.examationPlace,jdbcType=VARCHAR},
+    examation_invigilator = #{record.examationInvigilator,jdbcType=VARCHAR},
+    grade = #{record.grade,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -240,14 +286,23 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.wlmiao.bo.CourseMain">
     update course_main
     <set>
+      <if test="courseType != null">
+        course_type = #{courseType,jdbcType=VARCHAR},
+      </if>
       <if test="courseNo != null">
         course_no = #{courseNo,jdbcType=VARCHAR},
       </if>
       <if test="courseName != null">
         course_name = #{courseName,jdbcType=VARCHAR},
       </if>
+      <if test="courseTime != null">
+        course_time = #{courseTime,jdbcType=VARCHAR},
+      </if>
       <if test="teacherNo != null">
         teacher_no = #{teacherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherName != null">
+        teacher_name = #{teacherName,jdbcType=VARCHAR},
       </if>
       <if test="instituteNo != null">
         institute_no = #{instituteNo,jdbcType=VARCHAR},
@@ -267,20 +322,27 @@
       <if test="examationInvigilator != null">
         examation_invigilator = #{examationInvigilator,jdbcType=VARCHAR},
       </if>
+      <if test="grade != null">
+        grade = #{grade,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.wlmiao.bo.CourseMain">
     update course_main
-    set course_no = #{courseNo,jdbcType=VARCHAR},
+    set course_type = #{courseType,jdbcType=VARCHAR},
+      course_no = #{courseNo,jdbcType=VARCHAR},
       course_name = #{courseName,jdbcType=VARCHAR},
+      course_time = #{courseTime,jdbcType=VARCHAR},
       teacher_no = #{teacherNo,jdbcType=VARCHAR},
+      teacher_name = #{teacherName,jdbcType=VARCHAR},
       institute_no = #{instituteNo,jdbcType=VARCHAR},
       credit = #{credit,jdbcType=INTEGER},
       is_examation = #{isExamation,jdbcType=TINYINT},
       examation_time = #{examationTime,jdbcType=TIMESTAMP},
       examation_place = #{examationPlace,jdbcType=VARCHAR},
-      examation_invigilator = #{examationInvigilator,jdbcType=VARCHAR}
+      examation_invigilator = #{examationInvigilator,jdbcType=VARCHAR},
+      grade = #{grade,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByExampleWithRowbounds" parameterType="com.wlmiao.bo.CourseMainExample" resultMap="BaseResultMap">

@@ -60,55 +60,38 @@
       <div class="page-content">
         <div class="page-header">
           <h1>
-            上传开课信息
+            下载教师名单
           </h1>
         </div><!-- /.page-header -->
 
         <div class="row">
           <div class="col-xs-12">
             <!-- CONTENT BEGINS -->
-            <form class="form-horizontal" role="form" action="/uploadCourseInformation" method="post">
+            <form class="form-horizontal" role="form" action="/downloadTeacher" method="post">
               <div class="form-group">
               <#--<input name="tasktype" type="hidden" value="${taskType}"/>-->
 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">
-                    任务类型 </label>
+                  <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 任务类型 </label>
                   <div class="col-sm-9">
-                    <input readonly="" type="text" class="col-xs-10 col-sm-5"
-                           id="form-input-readonly" value="上传开课信息"/>
+                    <input readonly="" type="text" class="col-xs-10 col-sm-5" id="form-input-readonly"
+                           value="下载教师名单"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right"> 学院号(留空则不限制学院) </label>
+                  <div class="col-sm-6">
+                    <textarea class="form-control" id="form-field-8" name="institute_no" rows="1"></textarea>
                   </div>
                 </div>
 
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 开课信息 </label>
-                  <div class="col-sm-6">
-                    <input id="course_information" name="course_information" type="hidden"/>
-                    <div class="dropzone" data-val="course_information">
-                      <div class="fallback">
-                        <input name="course_information" type="file"/>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="space-4"></div>
-                </div>
-
-                <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 选择年级 </label>
-                  <div class="col-sm-6">
-                    <textarea class="form-control" id="form-field-8"
-                              name="grade"
-                              rows="1">
-                    </textarea>
-                  </div>
-                </div>
               </div>
 
               <div class="clearfix form-actions">
                 <div class="col-md-offset-3 col-md-9">
                   <button class="btn btn-info" type="submit">
                     <i class="icon-ok bigger-110"></i>
-                    上传
+                    导出
                   </button>
                   &nbsp; &nbsp; &nbsp;
                   <button class="btn" type="reset">
