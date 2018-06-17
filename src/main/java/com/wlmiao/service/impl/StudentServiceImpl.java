@@ -44,6 +44,7 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     public void checkGPA(StudentMain student, HttpServletResponse response) throws EduSysException {
         String majorNo = student.getMajorNo();
+        String studentNo = student.getStudentNo();
 
         TrainingPlanExample example = new TrainingPlanExample();
         example.createCriteria().andMajorNoEqualTo(majorNo);
@@ -54,13 +55,94 @@ public class StudentServiceImpl implements IStudentService {
 
         TrainingPlan trainingPlan = trainingPlanList.get(0);
         JSONArray content = JSON.parseArray(trainingPlan.getContent());
-        //TODO
+
+        CourseStudentExample example1 = new CourseStudentExample();
+        example1.createCriteria().andStudentNoEqualTo(studentNo);
+        List<CourseStudent> courseStudentList = courseStudentMapper.selectByExample(example1);
+
+        HashMap<String, Integer> courseScoreMap = new HashMap<>();
+        for (CourseStudent courseStudent : courseStudentList) {
+            String courseNo = courseStudent.getCourseNo();
+            CourseMainExample courseMainExample = new CourseMainExample();
+            courseMainExample.createCriteria().andCourseNoEqualTo(courseNo);
+            CourseMain courseMain = courseMainMapper.selectByExample(courseMainExample).get(0);
+            courseScoreMap.put(courseMain.getCourseType(), courseStudent.getScore());
+        }
+
+        Double totalCredit = (double) 0;
+        Double totalGP = (double) 0;
+        for (Object o : content) {
+            JSONObject jsonObject = (JSONObject) o;
+            String courseType = jsonObject.getString("course_type_no");
+            if (courseScoreMap.get(courseType) != null) {
+                Integer score = courseScoreMap.get(courseType);
+                if (score >= 60) {
+                    totalGP += (double) (courseScoreMap.get(courseType) - 50) / 10 * jsonObject.getInteger("credit");
+                } else {
+                    totalGP += 1 * jsonObject.getInteger("credit");
+                }
+
+                totalCredit += jsonObject.getInteger("credit");
+
+                jsonObject.put("score", score);
+            }
+        }
+        Double GPA = totalGP / totalCredit;
+
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
+        Sheet sheet = xssfWorkbook.createSheet("student_list");
+
+        Row tempRow = sheet.createRow(0);
+        tempRow.createCell(0).setCellValue("姓名: ");
+        tempRow.createCell(1).setCellValue(student.getStudentName());
+        tempRow.createCell(2).setCellValue("学号: ");
+        tempRow.createCell(3).setCellValue(studentNo);
+        tempRow.createCell(4).setCellValue("专业: ");
+        tempRow.createCell(5).setCellValue(student.getMajor());
+
+        tempRow = sheet.createRow(1);
+        tempRow.createCell(0).setCellValue("当前绩点: " + GPA + ", 毕业绩点低于1.5将");
+
+        List<String> titleList = Arrays.asList(new String[]{"课程编号", "课程名", "修读年", "学分", "成绩", "单科绩点"});
+
+        Row titleRow = sheet.createRow(2);
+        for (Integer i = 0; i < titleList.size(); i++) {
+            titleRow.createCell(i).setCellValue(titleList.get(i));
+        }
+
+        for (Integer rowNumber = 0; rowNumber < content.size(); rowNumber++) {
+            Row row = sheet.createRow(rowNumber + 3);
+            JSONObject jsonObject = content.getJSONObject(rowNumber);
+            row.createCell(0).setCellValue(jsonObject.getString("course_type_no"));
+            row.createCell(1).setCellValue(jsonObject.getString("course_name"));
+            row.createCell(2).setCellValue(jsonObject.getString("course_time"));
+            row.createCell(3).setCellValue(jsonObject.getString("credit"));
+            Integer score = jsonObject.getInteger("score");
+            row.createCell(4).setCellValue(score);
+
+                if (score >= 60) {
+                    row.createCell(5).setCellValue((double)(score - 50) / 10);
+                } else {
+                    row.createCell(5).setCellValue(1);
+                }
+            row.createCell(5).setCellValue((jsonObject.getDouble("score") - 60) / 10 + 1);
+        }
+
+        try {
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=studentlist.xlsx");
+            xssfWorkbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
+        }
+
 
     }
 
     @Override
     public void downloadCourseChosenTable(StudentMain student, HttpServletResponse response)
         throws EduSysException {
+
         String majorNo = student.getMajorNo();
         String grade = student.getGrade();
 
@@ -163,17 +245,16 @@ public class StudentServiceImpl implements IStudentService {
         sheet.createRow(4).createCell(0).setCellValue("第四节课/15:25 - 17:05");
         sheet.createRow(5).createCell(0).setCellValue("第五节课/18:30 - 21:05");
 
-
         for (CourseStudent courseStudent : courseStudentList) {
             String courseNo = courseStudent.getCourseNo();
-            CourseMainExample example1 =  new CourseMainExample();
+            CourseMainExample example1 = new CourseMainExample();
             example1.createCriteria().andCourseNoEqualTo(courseNo);
 
             CourseMain courseMain = courseMainMapper.selectByExample(example1).get(0);
 
             String time = courseMain.getCourseTime();
-            Integer weekday = Integer.valueOf(time.substring(0,time.indexOf("/")));
-            Integer courseNumber = Integer.valueOf(time.substring(time.indexOf("/")+1));
+            Integer weekday = Integer.valueOf(time.substring(0, time.indexOf("/")));
+            Integer courseNumber = Integer.valueOf(time.substring(time.indexOf("/") + 1));
             Cell cell = sheet.getRow(weekday).createCell(courseNumber);
             cell.setCellValue(courseNo + "/" + courseMain.getTeacherName() + "/" + courseMain.getCredit());
         }

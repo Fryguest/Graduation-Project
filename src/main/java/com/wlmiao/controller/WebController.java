@@ -110,12 +110,13 @@ public class WebController {
      */
     @RequestMapping("/uploadTrainPlan")
     public String uploadTrainPlan(@RequestParam("train_plan") String trainPlan,
-        @RequestParam("major") String major,
-        HttpServletResponse response) {
+        @RequestParam("major") String major, HttpServletResponse response) {
+        logger.info("get request to uploadTrainPlan, trainPlan = {}", trainPlan);
         try {
             managerService.uploadTrainPlan(trainPlan, major, response);
             return "success";
         } catch (Exception e) {
+            e.printStackTrace();
             return "fail";
         }
     }
@@ -125,11 +126,13 @@ public class WebController {
      */
     @RequestMapping("/uploadCourseInformation")
     public String uploadCourseInformation(@RequestParam("course_information") String courseInformation,
-        @RequestParam("grage") String grade, HttpServletResponse response) {
+        @RequestParam("grade") String grade, HttpServletResponse response) {
+        logger.info("get request to uploadCourseInformation, courseInformation = {}", courseInformation);
         try {
             managerService.uploadCourseInformation(courseInformation, grade, response);
             return "success";
         } catch (Exception e) {
+            e.printStackTrace();
             return "fail";
         }
     }
@@ -219,7 +222,7 @@ public class WebController {
     }
 
     /**
-     * 下载课表
+     * 下载课表(学生)
      */
     @RequestMapping("/downloadStudentTimetable")
     public void downloadStudentTimetable(HttpServletResponse response) throws IOException {
@@ -230,6 +233,46 @@ public class WebController {
             e.returnException(response);
         }
     }
+
+    /**
+     * 下载课程学生名单
+     */
+    @RequestMapping("/downloadCourseStudent")
+    public void downloadCourseStudent(@RequestParam("course_no") String courseNo, HttpServletResponse response)
+        throws IOException {
+        try {
+            teacherService.downloadCourseStudent(courseNo, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
+
+    /**
+     * 上传学生成绩
+     */
+    @RequestMapping("/uploadCourseScore")
+    public void uploadCourseScore(@RequestParam("course_score") String courseScore,
+        @RequestParam("course_no") String courseNo, HttpServletResponse response) throws IOException {
+        try {
+            teacherService.uploadStudentScore(courseScore, courseNo, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
+
+    /**
+     * 下载课表(教师)
+     */
+    @RequestMapping("/downloadTeacherTimetable")
+    public void downloadTeacherTimetable(HttpServletResponse response) throws IOException {
+        try {
+            TeacherMain teacherMain = getCurrentTeacher();
+            teacherService.downloadTeacherTimetable(teacherMain, response);
+        } catch (EduSysException e) {
+            e.returnException(response);
+        }
+    }
+
 
     private TeacherMain getCurrentTeacher() {
         String userName = getUserName();

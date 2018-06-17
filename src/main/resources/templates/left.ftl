@@ -21,24 +21,35 @@
       </a>
       <ul class="submenu">
         <li <#if taskType?? && taskType == 10000>class="active"</#if>>
-          <a href="courseChosenFront">
+          <a href="studentcourseChosenFront">
             <i class="icon-double-angle-right"></i>
-            选课
+            选课入口
+          </a>
+        </li>
+        <li <#if taskType?? && taskType == 10003>class="active"</#if>>
+          <a href="studentdownloadCourseChosenTableFront">
+            <i class="icon-double-angle-right"></i>
+            下载选课表
           </a>
         </li>
         <li <#if taskType?? && taskType == 10001>class="active"</#if>>
-          <a href="checkGPAFront">
+          <a href="studentcheckGPAFront">
             <i class="icon-double-angle-right"></i>
             查看培养计划及成绩
           </a>
         </li>
         <li <#if taskType?? && taskType == 10002>class="active"</#if>>
-          <a href="downloadStudentTimetableFront">
+          <a href="studentdownloadStudentTimetableFront">
             <i class="icon-double-angle-right"></i>
             查看课表
           </a>
         </li>
-
+        <li <#if taskType?? && taskType == 10004>class="active"</#if>>
+          <a href="studentExamRegistrationFront">
+            <i class="icon-double-angle-right"></i>
+            考试报名
+          </a>
+        </li>
       </ul>
     </li>
     <li <#if taskType??  && (taskType >= 20000 && taskType < 30000)>class="active open"</#if>>
@@ -106,7 +117,7 @@
           </a>
         </li>
         <li <#if taskType?? && taskType == 30008>class="active"</#if>>
-          <a href="/Teacher">
+          <a href="/managerdownloadTeacherFront">
             <i class="icon-double-angle-right"></i>
             下载教师名单
           </a>

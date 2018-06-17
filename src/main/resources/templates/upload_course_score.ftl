@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="assets/css/font-awesome.min.css"/>
 
   <!--[if IE 7]>
-    <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"/>
+  <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css"/>
   <![endif]-->
 
   <!-- page specific plugin styles -->
@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="assets/css/ace-skins.min.css"/>
 
   <!--[if lte IE 8]>
-    <link rel="stylesheet" href="assets/css/ace-ie.min.css"/>
+  <link rel="stylesheet" href="assets/css/ace-ie.min.css"/>
   <![endif]-->
 
   <!-- inline styles related to this page -->
@@ -34,8 +34,8 @@
   <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
   <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+  <script src="assets/js/html5shiv.js"></script>
+  <script src="assets/js/respond.min.js"></script>
   <![endif]-->
 </head>
 
@@ -60,14 +60,14 @@
       <div class="page-content">
         <div class="page-header">
           <h1>
-            选课入口
+            上传学生成绩
           </h1>
         </div><!-- /.page-header -->
 
         <div class="row">
           <div class="col-xs-12">
             <!-- CONTENT BEGINS -->
-            <form class="form-horizontal" role="form" action="/courseChosen" method="post">
+            <form class="form-horizontal" role="form" action="/uploadCourseScore" method="post">
               <div class="form-group">
               <#--<input name="tasktype" type="hidden" value="${taskType}"/>-->
 
@@ -75,21 +75,28 @@
                   <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 任务类型 </label>
                   <div class="col-sm-9">
                     <input readonly="" type="text" class="col-xs-10 col-sm-5" id="form-input-readonly"
-                           value="选课"/>
+                           value="上传学生成绩"/>
                   </div>
                 </div>
 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 选课信息 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 学生成绩 </label>
                   <div class="col-sm-6">
-                    <input id="course_chosen" name="course_chosen" type="hidden"/>
-                    <div class="dropzone" data-val="course_chosen">
+                    <input id="course_score" name="course_score" type="hidden"/>
+                    <div class="dropzone" data-val="course_score">
                       <div class="fallback">
-                        <input name="course_chosen" type="file"/>
+                        <input name="course_score" type="file"/>
                       </div>
                     </div>
                   </div>
                   <div class="space-4"></div>
+                </div>
+
+                <div class="form-group">
+                  <label class="col-sm-3 control-label no-padding-right"> 课程号 </label>
+                  <div class="col-sm-6">
+                    <textarea class="form-control" id="form-field-8" name="course_no" rows="1"></textarea>
+                  </div>
                 </div>
 
               </div>
@@ -112,6 +119,7 @@
             <!-- CONTENT ENDS -->
           </div><!-- /.col -->
         </div><!-- /.row -->
+
       </div><!-- /.page-content -->
     </div><!-- /.main-content -->
 
@@ -134,7 +142,7 @@
 
 <!--[if IE]>
 <script type="text/javascript">
-    window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>" + "<" + "/script>");
+  window.jQuery || document.write("<script src='assets/js/jquery-1.10.2.min.js'>" + "<" + "/script>");
 </script>
 <![endif]-->
 

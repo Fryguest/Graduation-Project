@@ -4,6 +4,7 @@ import com.wlmiao.constant.FrontConstant;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -76,19 +77,23 @@ public class FrontController {
         return "import_teacher";
     }
 
-    @RequestMapping("/courseChosenFront")
+    @RequestMapping("/studentcourseChosenFront")
     public String courseChosenFront(Model model) {
         model.addAttribute("taskType", FrontConstant.COURSE_CHOSEN);
         return "course_chosen";
     }
 
-    @RequestMapping("/checkGPAFront")
+    @RequestMapping("/studentcheckGPAFront")
     public String checkGPAFront(Model model) {
         model.addAttribute("taskType", FrontConstant.CHECK_GPA);
         return "check_GPA";
     }
-
-    @RequestMapping("/downloadStudentTimetableFront")
+    @RequestMapping("/studentdownloadCourseChosenTableFront")
+    public String studentdownloadCourseChosenTableFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.DOWNLOAD_COURSE_CHOSEN_TABLE);
+        return "download_course_chosen_table";
+    }
+    @RequestMapping("/studentdownloadStudentTimetableFront")
     public String downloadStudentTimetableFront(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_STUDENT_TIMETABLE);
         return "download_student_timetable";
@@ -110,6 +115,12 @@ public class FrontController {
     public String downloadTeacherTimetableFront(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_TEACHER_TIMETABLE);
         return "download_teacher_timetable";
+    }
+
+    @RequestMapping("/studentExamRegistrationFront")
+    public String studentExamRegistrationFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.EXAM_REGISTRATION);
+        return "exam_registration";
     }
 
     @RequestMapping("/success")

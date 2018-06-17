@@ -72,11 +72,10 @@
               <#--<input name="tasktype" type="hidden" value="${taskType}"/>-->
 
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly">
-                    任务类型 </label>
+                  <label class="col-sm-3 control-label no-padding-right" for="form-input-readonly"> 任务类型 </label>
                   <div class="col-sm-9">
-                    <input readonly="" type="text" class="col-xs-10 col-sm-5"
-                           id="form-input-readonly" value="上传开课信息"/>
+                    <input readonly="" type="text" class="col-xs-10 col-sm-5" id="form-input-readonly"
+                           value="上传开课信息"/>
                   </div>
                 </div>
 
@@ -93,13 +92,11 @@
                   <div class="space-4"></div>
                 </div>
 
+
                 <div class="form-group">
-                  <label class="col-sm-3 control-label no-padding-right"> 选择年级 </label>
+                  <label class="col-sm-3 control-label no-padding-right"> 年级 </label>
                   <div class="col-sm-6">
-                    <textarea class="form-control" id="form-field-8"
-                              name="grade"
-                              rows="1">
-                    </textarea>
+                    <textarea class="form-control" id="form-field-8" name="grade" rows="1"></textarea>
                   </div>
                 </div>
               </div>

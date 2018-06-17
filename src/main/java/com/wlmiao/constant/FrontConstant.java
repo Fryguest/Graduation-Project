@@ -5,6 +5,8 @@ public class FrontConstant {
     public static Integer COURSE_CHOSEN = 10000;
     public static Integer CHECK_GPA = 10001;
     public static Integer DOWNLOAD_STUDENT_TIMETABLE = 10002;
+    public static Integer DOWNLOAD_COURSE_CHOSEN_TABLE = 10003;
+    public static Integer EXAM_REGISTRATION = 10004;
 
     public static Integer DOWNLOAD_COURSE_STUDENT = 20000;
     public static Integer UPLOAD_COURSE_SCORE = 20001;

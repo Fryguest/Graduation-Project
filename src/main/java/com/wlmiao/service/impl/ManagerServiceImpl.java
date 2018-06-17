@@ -20,6 +20,7 @@ import com.wlmiao.bo.TeacherMainExample;
 import com.wlmiao.bo.TrainingPlan;
 import com.wlmiao.constant.ExceptionConstant;
 import com.wlmiao.dao.ClassMainMapper;
+import com.wlmiao.dao.CourseMainMapper;
 import com.wlmiao.dao.InstituteMajorMapper;
 import com.wlmiao.dao.StudentMainMapper;
 import com.wlmiao.dao.TeacherMainMapper;
@@ -59,6 +60,8 @@ public class ManagerServiceImpl implements IManagerService {
     private ClassMainMapper classMainMapper;
     @Autowired
     private InstituteMajorMapper instituteMajorMapper;
+    @Autowired
+    private CourseMainMapper courseMainMapper;
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -180,7 +183,7 @@ public class ManagerServiceImpl implements IManagerService {
 
         try {
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=studentlist.xlsx");
+            response.setHeader("Content-Disposition", "attachment;fileName=teacherlist.xlsx");
             xssfWorkbook.write(response.getOutputStream());
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
@@ -351,6 +354,25 @@ public class ManagerServiceImpl implements IManagerService {
         List<CourseMain> courseMainList = inputList.stream().map(map -> produceCourse(map, grade))
             .collect(Collectors.toList());
 
+        HashMap<String, List<CourseMain>> map = new HashMap<>();
+        for (CourseMain courseMain : courseMainList) {
+            if (map.containsKey(courseMain.getCourseType())) {
+                map.get(courseMain.getCourseType()).add(courseMain);
+            } else {
+                List<CourseMain> list = new ArrayList<>();
+                list.add(courseMain);
+                map.put(courseMain.getCourseType(), list);
+            }
+        }
+
+        for (List<CourseMain> list : map.values()) {
+            for (Integer index = 0; index < list.size(); index++) {
+                CourseMain courseMain = list.get(index);
+                courseMain.setCourseNo(courseMain.getCourseType() + "2018" + String.format("%02d", index + 1));
+            }
+        }
+
+        courseMainList.forEach(s -> courseMainMapper.insert(s));
     }
 
     /**
@@ -361,7 +383,8 @@ public class ManagerServiceImpl implements IManagerService {
 
         courseMain.setCourseType(map.get("课程类型编号"));
         courseMain.setCourseName(map.get("课程名"));
-        courseMain.setTeacherNo(map.get("教师号"));
+        courseMain.setTeacherNo(map.get("教师编号"));
+        courseMain.setTeacherName(map.get("教师姓名"));
         courseMain.setCredit(Integer.valueOf(map.get("学分")));
         courseMain.setCourseTime(map.get("上课时间"));
         courseMain.setGrade(grade);
