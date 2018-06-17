@@ -211,13 +211,14 @@ public class WebController {
      * 选课
      */
     @RequestMapping("/courseChosen")
-    public void courseChosen(@RequestParam("course_chosen") String courseChosen, HttpServletResponse response)
+    public String courseChosen(@RequestParam("course_chosen") String courseChosen, HttpServletResponse response)
         throws IOException {
         try {
             StudentMain studentMain = getCurrentStudent();
             studentService.courseChosen(studentMain, courseChosen, response);
+            return "success";
         } catch (EduSysException e) {
-            e.returnException(response);
+            return "fail";
         }
     }
 
