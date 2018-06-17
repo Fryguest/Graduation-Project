@@ -49,19 +49,19 @@
             </a>
             <ul class="submenu">
                 <li <#if taskType?? && taskType == 20000>class="active"</#if>>
-                    <a href="downloadCourseStudentFront">
+                    <a href="teacherdownloadCourseStudentFront">
                         <i class="icon-double-angle-right"></i>
                         下载学生名单
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 20001>class="active"</#if>>
-                    <a href="uploadCourseScoreFront">
+                    <a href="teacheruploadCourseScoreFront">
                         <i class="icon-double-angle-right"></i>
                          上传考试成绩
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 20002>class="active"</#if>>
-                    <a href="downloadTeacherTimetableFront">
+                    <a href="teacherdownloadTeacherTimetableFront">
                         <i class="icon-double-angle-right"></i>
                         查看课表
                     </a>
@@ -76,37 +76,49 @@
             </a>
             <ul class="submenu">
                 <li <#if taskType?? && taskType == 30000>class="active"</#if>>
-                    <a href="importStudentFront">
+                    <a href="managerimportStudentFront">
                         <i class="icon-double-angle-right"></i>
                         新生名单导入
                     </a>
                 </li>
+                <li <#if taskType?? && taskType == 30006>class="active"</#if>>
+                    <a href="managerimportTeacherFront">
+                        <i class="icon-double-angle-right"></i>
+                        教师名单导入
+                    </a>
+                </li>
                 <li <#if taskType?? && taskType == 30001>class="active"</#if>>
-                    <a href="uploadTrainPlanFront">
+                    <a href="manageruploadTrainPlanFront">
                         <i class="icon-double-angle-right"></i>
                         上传培养计划
                     </a>
                 </li>
+                <li <#if taskType?? && taskType == 30007>class="active"</#if>>
+                    <a href="manageruploadCourseInformationFront">
+                        <i class="icon-double-angle-right"></i>
+                        上传开课信息
+                    </a>
+                </li>
                 <li <#if taskType?? && taskType == 30002>class="active"</#if>>
-                    <a href="/downloadStudentFront">
+                    <a href="/managerdownloadStudentFront">
                         <i class="icon-double-angle-right"></i>
                         下载学生名单
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 30003>class="active"</#if>>
-                    <a href="/downloadClassFront">
+                    <a href="/managerdownloadClassFront">
                         <i class="icon-double-angle-right"></i>
                         下载班级名单
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 30004>class="active"</#if>>
-                    <a href="/professionalDiversionFront">
+                    <a href="/managerprofessionalDiversionFront">
                         <i class="icon-double-angle-right"></i>
                         专业分流
                     </a>
                 </li>
                 <li <#if taskType?? && taskType == 30005>class="active"</#if>>
-                    <a href="/distributionTeacherFront">
+                    <a href="/managerdistributionTeacherFront">
                         <i class="icon-double-angle-right"></i>
                         分配班主任
                     </a>

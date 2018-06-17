@@ -16,4 +16,6 @@ public class FrontConstant {
     public static Integer DOWNLOAD_CLASS_LIST = 30003;
     public static Integer PROFESSIONAL_DIVERSION = 30004;
     public static Integer DISTRIBUTION_TEACHER = 30005;
+    public static Integer IMPORT_TEACHER = 30006;
+    public static Integer UPLOAD_COURSE_INFORMATION = 30007;
 }

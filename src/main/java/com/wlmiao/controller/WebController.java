@@ -60,6 +60,21 @@ public class WebController {
     }
 
     /**
+     * 导入教师
+     */
+    @RequestMapping("/importTeacher")
+    public String importTeacher(@RequestParam("teacher_list") String teacherList,
+                                HttpServletResponse response) {
+        logger.info("get request to importTeacher, teacherList = {}", teacherList);
+        try {
+            managerService.importTeacher(teacherList, response);
+            return "success";
+        } catch (EduSysException e) {
+            return "fail";
+        }
+    }
+
+    /**
      * 下载学生名单
      */
     @RequestMapping("/downloadStudent")
@@ -87,6 +102,18 @@ public class WebController {
         }
     }
 
+    /**
+     * 上传培养计划
+     */
+    @RequestMapping("/uploadCourseInformation")
+    public String uploadCourseInformation(@RequestParam("course_information") String courseInformation, HttpServletResponse response) {
+        try {
+            managerService.uploadCourseInformation(courseInformation, response);
+            return "success";
+        } catch (Exception e) {
+            return "fail";
+        }
+    }
 
     /**
      * 下载班级列表

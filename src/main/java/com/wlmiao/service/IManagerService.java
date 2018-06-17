@@ -10,6 +10,8 @@ public interface IManagerService {
     void importStudentAndDivision(String studentList, Integer classNumber, String grade, HttpServletResponse response)
             throws EduSysException;
 
+    void importTeacher(String teacherList, HttpServletResponse response) throws EduSysException;
+
     void downloadStudent(String majorNo, String grade, HttpServletResponse response) throws EduSysException;
 
     void downloadClass(String majorNo, String grade, HttpServletResponse response) throws EduSysException;
@@ -21,4 +23,6 @@ public interface IManagerService {
             throws EduSysException;
 
     void uploadTrainPlan(String trainPlan, String major, HttpServletResponse response) throws EduSysException;
+
+    void uploadCourseInformation(String courseInformation, HttpServletResponse response) throws EduSysException;
 }

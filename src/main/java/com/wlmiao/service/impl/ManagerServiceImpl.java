@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static com.wlmiao.constant.RoleConstant.STUDENT;
+import static com.wlmiao.constant.RoleConstant.TEACHER;
 import static com.wlmiao.util.MD5Util.getMD5Str;
 
 @Service
@@ -35,6 +36,8 @@ public class ManagerServiceImpl implements IManagerService {
 
     @Autowired
     private StudentMainMapper studentMainMapper;
+    @Autowired
+    private TeacherMainMapper teacherMainMapper;
     @Autowired
     private ClassMainMapper classMainMapper;
     @Autowired
@@ -57,11 +60,19 @@ public class ManagerServiceImpl implements IManagerService {
                 .collect(Collectors.toList());
         Map<String, Map<String, List<StudentMain>>> majorMap = division(studentMainList, classStudentNumber, grade);
         List<ClassMain> classMainList = produceClass(majorMap, grade);
-
         studentMainList.forEach(s -> studentMainMapper.insert(s));
         classMainList.forEach(s -> classMainMapper.insert(s));
+        studentMainList.forEach(s -> insertUser(s.getStudentNo(), s.getStudentName(), STUDENT));
 
-        studentMainList.forEach(s -> insertUser(s.getStudentNo(), STUDENT));
+    }
+
+    @Override
+    public void importTeacher(String teacherListPath, HttpServletResponse response)
+            throws EduSysException {
+        List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(teacherListPath);
+        List<TeacherMain> teacherMainList = inputList.stream().map(map -> produceTeacher(map)).collect(Collectors.toList());
+        teacherMainList.forEach(s -> teacherMainMapper.insert(s));
+        teacherMainList.forEach(s -> insertUser(s.getTeacherNo(), s.getTeacherName(), TEACHER));
     }
 
     @Override
@@ -236,7 +247,7 @@ public class ManagerServiceImpl implements IManagerService {
         example.createCriteria().andMajorNoEqualTo(majorNo);
         List<InstituteMajor> instituteMajorList = instituteMajorMapper.selectByExample(example);
         if (CollectionUtils.isEmpty(instituteMajorList)) {
-            return ;
+            return;
         }
 
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(trainPlan);
@@ -259,9 +270,30 @@ public class ManagerServiceImpl implements IManagerService {
         trainingPlan.setInstituteNo(instituteMajorList.get(0).getInstituteNo());
         trainingPlan.setInstitute(instituteMajorList.get(0).getInstitute());
         trainingPlanMapper.insert(trainingPlan);
+    }
+
+    /**
+     * 上传开课信息，并安排课程时间
+     */
+    public void uploadCourseInformation(String courseInformationList, HttpServletResponse response) throws EduSysException {
+
+        List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(courseInformationList);
+
+        List<CourseMain> courseMainList = inputList.stream().map(map -> produceCourse(map)).collect(Collectors.toList());
 
     }
 
+    /**
+     * 生成课程
+     */
+    private CourseMain produceCourse(HashMap<String, String> map) {
+        CourseMain courseMain = new CourseMain();
+
+        courseMain.set
+
+
+        return courseMain;
+    }
 
     /**
      * 生成班级
@@ -313,6 +345,22 @@ public class ManagerServiceImpl implements IManagerService {
         return studentMain;
     }
 
+    /**
+     * 生成教师信息
+     */
+    private TeacherMain produceTeacher(HashMap<String, String> map) {
+        TeacherMain teacher = new TeacherMain();
+        teacher.setIdentityNumber(map.get("identity_number"));
+        teacher.setTeacherNo(map.get("teacher_no"));
+        teacher.setTeacherName(map.get("teacher_name"));
+        teacher.setSex(map.get("sex"));
+        teacher.setInstituteNo(map.get("institute_no"));
+        teacher.setInstitute(map.get("institute"));
+        teacher.setNativePlace(map.get("native_place"));
+        teacher.setIdentityNumber(map.get("identity_number"));
+        teacher.setTitle(map.get("title"));
+        return teacher;
+    }
 
     /**
      * 分班
@@ -361,10 +409,11 @@ public class ManagerServiceImpl implements IManagerService {
     }
 
 
-    public void insertUser(String userName, Long type) {
+    public void insertUser(String userName, String nickName, Long type) {
         User user = new User();
-        user.setNickname(userName);
-        user.setPswd(getMD5Str(userName));
+        user.setNickname(nickName);
+        user.setEmail(userName);
+        user.setPswd(getMD5Str(userName.substring(userName.length() - 6)));
         user.setCreateTime(new Date());
         user.setStatus(true);
         user.setModifyTime(new Date());

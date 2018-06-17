@@ -17,40 +17,57 @@ public class FrontController {
         return "index";
     }
 
-    @RequestMapping("/importStudentFront")
+    @RequestMapping({"/forbiddenFront"})
+    public String forbidden() {
+        return "forbidden";
+    }
+
+    @RequestMapping("/managerimportStudentFront")
     public String importStudentFront(Model model) {
         model.addAttribute("taskType", FrontConstant.IMPORT_STUDENT);
         return "import_student";
     }
 
-    @RequestMapping("/uploadTrainPlanFront")
-    public String uploadTrainPlan(Model model) {
+    @RequestMapping("/manageruploadTrainPlanFront")
+    public String manageruploadTrainPlanFront(Model model) {
         model.addAttribute("taskType", FrontConstant.UPLOAD_TRAIN_PLAN);
         return "upload_train_plan";
     }
 
-    @RequestMapping("/downloadStudentFront")
+    @RequestMapping("/manageruploadCourseInformationFront")
+    public String manageruploadCourseInformationFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.UPLOAD_COURSE_INFORMATION);
+        return "upload_course_information";
+    }
+
+    @RequestMapping("/managerdownloadStudentFront")
     public String downloadStudent(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_STUDENT_LIST);
         return "download_student";
     }
 
-    @RequestMapping("/downloadClassFront")
+    @RequestMapping("/managerdownloadClassFront")
     public String downloadClass(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_CLASS_LIST);
         return "download_class";
     }
 
-    @RequestMapping("/professionalDiversionFront")
+    @RequestMapping("/managerprofessionalDiversionFront")
     public String professionalDiversion(Model model) {
         model.addAttribute("taskType", FrontConstant.PROFESSIONAL_DIVERSION);
         return "professional_diversion";
     }
 
-    @RequestMapping("/distributionTeacherFront")
+    @RequestMapping("/managerdistributionTeacherFront")
     public String distributionTeacherFront(Model model) {
         model.addAttribute("taskType", FrontConstant.DISTRIBUTION_TEACHER);
         return "distribution_teacher";
+    }
+
+    @RequestMapping("/managerimportTeacherFront")
+    public String managerimportTeacherFront(Model model){
+        model.addAttribute("taskType", FrontConstant.IMPORT_TEACHER);
+        return "import_teacher";
     }
 
     @RequestMapping("/courseChosenFront")
@@ -71,19 +88,19 @@ public class FrontController {
         return "download_student_timetable";
     }
 
-    @RequestMapping("/downloadCourseStudentFront")
+    @RequestMapping("/teacherdownloadCourseStudentFront")
     public String downloadCourseStudentFront(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_COURSE_STUDENT);
         return "download_course_student";
     }
 
-    @RequestMapping("/uploadCourseScoreFront")
+    @RequestMapping("/teacheruploadCourseScoreFront")
     public String uploadCourseScoreFront(Model model) {
         model.addAttribute("taskType", FrontConstant.UPLOAD_COURSE_SCORE);
         return "upload_course_score";
     }
 
-    @RequestMapping("/downloadTeacherTimetableFront")
+    @RequestMapping("/teacherdownloadTeacherTimetableFront")
     public String downloadTeacherTimetableFront(Model model) {
         model.addAttribute("taskType", FrontConstant.DOWNLOAD_TEACHER_TIMETABLE);
         return "download_teacher_timetable";

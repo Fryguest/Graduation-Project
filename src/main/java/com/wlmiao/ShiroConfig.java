@@ -33,11 +33,13 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilter = new ShiroFilterFactoryBean();
         shiroFilter.setLoginUrl("/login");
         shiroFilter.setSuccessUrl("/index");
-        shiroFilter.setUnauthorizedUrl("/forbidden");
+        shiroFilter.setUnauthorizedUrl("/forbiddenFront");
 
         Map<String, String> filterChainDefinitionMapping = new HashMap<String, String>();
-        filterChainDefinitionMapping.put("/", "authc");
         filterChainDefinitionMapping.put("/static/**", "anon");
+        filterChainDefinitionMapping.put("/student*", "roles[\"student\"]");
+        filterChainDefinitionMapping.put("/manager*", "roles[\"manager\"]");
+        filterChainDefinitionMapping.put("/teacher*", "roles[\"teacher\"]");
         filterChainDefinitionMapping.put("/*", "authc");
         shiroFilter.setFilterChainDefinitionMap(filterChainDefinitionMapping);
 
