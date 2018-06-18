@@ -13,7 +13,9 @@ public class ClassMain implements Serializable {
 
     private Integer studentCount;
 
-    private String headTeacher;
+    private String headTeacherNo;
+
+    private String headTeacherName;
 
     private String majorNo;
 
@@ -61,12 +63,20 @@ public class ClassMain implements Serializable {
         this.studentCount = studentCount;
     }
 
-    public String getHeadTeacher() {
-        return headTeacher;
+    public String getHeadTeacherNo() {
+        return headTeacherNo;
     }
 
-    public void setHeadTeacher(String headTeacher) {
-        this.headTeacher = headTeacher == null ? null : headTeacher.trim();
+    public void setHeadTeacherNo(String headTeacherNo) {
+        this.headTeacherNo = headTeacherNo == null ? null : headTeacherNo.trim();
+    }
+
+    public String getHeadTeacherName() {
+        return headTeacherName;
+    }
+
+    public void setHeadTeacherName(String headTeacherName) {
+        this.headTeacherName = headTeacherName == null ? null : headTeacherName.trim();
     }
 
     public String getMajorNo() {
@@ -96,7 +106,8 @@ public class ClassMain implements Serializable {
         sb.append(", grade=").append(grade);
         sb.append(", className=").append(className);
         sb.append(", studentCount=").append(studentCount);
-        sb.append(", headTeacher=").append(headTeacher);
+        sb.append(", headTeacherNo=").append(headTeacherNo);
+        sb.append(", headTeacherName=").append(headTeacherName);
         sb.append(", majorNo=").append(majorNo);
         sb.append(", major=").append(major);
         sb.append(", serialVersionUID=").append(serialVersionUID);

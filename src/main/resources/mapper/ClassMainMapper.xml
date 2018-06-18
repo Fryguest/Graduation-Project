@@ -7,7 +7,8 @@
     <result column="grade" jdbcType="VARCHAR" property="grade" />
     <result column="class_name" jdbcType="VARCHAR" property="className" />
     <result column="student_count" jdbcType="INTEGER" property="studentCount" />
-    <result column="head_teacher" jdbcType="VARCHAR" property="headTeacher" />
+    <result column="head_teacher_no" jdbcType="VARCHAR" property="headTeacherNo" />
+    <result column="head_teacher_name" jdbcType="VARCHAR" property="headTeacherName" />
     <result column="major_no" jdbcType="VARCHAR" property="majorNo" />
     <result column="major" jdbcType="VARCHAR" property="major" />
   </resultMap>
@@ -70,7 +71,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, class_no, grade, class_name, student_count, head_teacher, major_no, major
+    id, class_no, grade, class_name, student_count, head_teacher_no, head_teacher_name,
+    major_no, major
   </sql>
   <select id="selectByExample" parameterType="com.wlmiao.bo.ClassMainExample" resultMap="BaseResultMap">
     select
@@ -108,11 +110,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into class_main (class_no, grade, class_name,
-    student_count, head_teacher, major_no,
-    major)
+    student_count, head_teacher_no, head_teacher_name,
+    major_no, major)
     values (#{classNo,jdbcType=VARCHAR}, #{grade,jdbcType=VARCHAR}, #{className,jdbcType=VARCHAR},
-    #{studentCount,jdbcType=INTEGER}, #{headTeacher,jdbcType=VARCHAR}, #{majorNo,jdbcType=VARCHAR},
-    #{major,jdbcType=VARCHAR})
+    #{studentCount,jdbcType=INTEGER}, #{headTeacherNo,jdbcType=VARCHAR}, #{headTeacherName,jdbcType=VARCHAR},
+    #{majorNo,jdbcType=VARCHAR}, #{major,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.wlmiao.bo.ClassMain">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -132,8 +134,11 @@
       <if test="studentCount != null">
         student_count,
       </if>
-      <if test="headTeacher != null">
-        head_teacher,
+      <if test="headTeacherNo != null">
+        head_teacher_no,
+      </if>
+      <if test="headTeacherName != null">
+        head_teacher_name,
       </if>
       <if test="majorNo != null">
         major_no,
@@ -155,8 +160,11 @@
       <if test="studentCount != null">
         #{studentCount,jdbcType=INTEGER},
       </if>
-      <if test="headTeacher != null">
-        #{headTeacher,jdbcType=VARCHAR},
+      <if test="headTeacherNo != null">
+        #{headTeacherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="headTeacherName != null">
+        #{headTeacherName,jdbcType=VARCHAR},
       </if>
       <if test="majorNo != null">
         #{majorNo,jdbcType=VARCHAR},
@@ -190,8 +198,11 @@
       <if test="record.studentCount != null">
         student_count = #{record.studentCount,jdbcType=INTEGER},
       </if>
-      <if test="record.headTeacher != null">
-        head_teacher = #{record.headTeacher,jdbcType=VARCHAR},
+      <if test="record.headTeacherNo != null">
+        head_teacher_no = #{record.headTeacherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.headTeacherName != null">
+        head_teacher_name = #{record.headTeacherName,jdbcType=VARCHAR},
       </if>
       <if test="record.majorNo != null">
         major_no = #{record.majorNo,jdbcType=VARCHAR},
@@ -211,7 +222,8 @@
     grade = #{record.grade,jdbcType=VARCHAR},
     class_name = #{record.className,jdbcType=VARCHAR},
     student_count = #{record.studentCount,jdbcType=INTEGER},
-    head_teacher = #{record.headTeacher,jdbcType=VARCHAR},
+    head_teacher_no = #{record.headTeacherNo,jdbcType=VARCHAR},
+    head_teacher_name = #{record.headTeacherName,jdbcType=VARCHAR},
     major_no = #{record.majorNo,jdbcType=VARCHAR},
     major = #{record.major,jdbcType=VARCHAR}
     <if test="_parameter != null">
@@ -233,8 +245,11 @@
       <if test="studentCount != null">
         student_count = #{studentCount,jdbcType=INTEGER},
       </if>
-      <if test="headTeacher != null">
-        head_teacher = #{headTeacher,jdbcType=VARCHAR},
+      <if test="headTeacherNo != null">
+        head_teacher_no = #{headTeacherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="headTeacherName != null">
+        head_teacher_name = #{headTeacherName,jdbcType=VARCHAR},
       </if>
       <if test="majorNo != null">
         major_no = #{majorNo,jdbcType=VARCHAR},
@@ -251,7 +266,8 @@
       grade = #{grade,jdbcType=VARCHAR},
       class_name = #{className,jdbcType=VARCHAR},
       student_count = #{studentCount,jdbcType=INTEGER},
-      head_teacher = #{headTeacher,jdbcType=VARCHAR},
+      head_teacher_no = #{headTeacherNo,jdbcType=VARCHAR},
+      head_teacher_name = #{headTeacherName,jdbcType=VARCHAR},
       major_no = #{majorNo,jdbcType=VARCHAR},
       major = #{major,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}

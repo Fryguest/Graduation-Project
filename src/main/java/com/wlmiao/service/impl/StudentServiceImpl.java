@@ -101,7 +101,7 @@ public class StudentServiceImpl implements IStudentService {
         tempRow.createCell(5).setCellValue(student.getMajor());
 
         tempRow = sheet.createRow(1);
-        tempRow.createCell(0).setCellValue("当前绩点: " + GPA + ", 毕业绩点低于1.5将");
+        tempRow.createCell(0).setCellValue("当前绩点: " + (GPA == null? 0: GPA) + ", 毕业绩点低于1.5将无法顺利毕业");
 
         List<String> titleList = Arrays.asList(new String[]{"课程编号", "课程名", "修读年", "学分", "成绩", "单科绩点"});
 
@@ -118,19 +118,21 @@ public class StudentServiceImpl implements IStudentService {
             row.createCell(2).setCellValue(jsonObject.getString("course_time"));
             row.createCell(3).setCellValue(jsonObject.getString("credit"));
             Integer score = jsonObject.getInteger("score");
-            row.createCell(4).setCellValue(score);
+            if (score != null) {
+                row.createCell(4).setCellValue(score);
 
                 if (score >= 60) {
-                    row.createCell(5).setCellValue((double)(score - 50) / 10);
+                    row.createCell(5).setCellValue((double) (score - 50) / 10);
                 } else {
                     row.createCell(5).setCellValue(1);
                 }
-            row.createCell(5).setCellValue((jsonObject.getDouble("score") - 60) / 10 + 1);
+                row.createCell(5).setCellValue((jsonObject.getDouble("score") - 60) / 10 + 1);
+            }
         }
 
         try {
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=studentlist.xlsx");
+            response.setHeader("Content-Disposition", "attachment;fileName=GPA.xlsx");
             xssfWorkbook.write(response.getOutputStream());
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
@@ -190,7 +192,7 @@ public class StudentServiceImpl implements IStudentService {
 
         try {
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=classlist.xlsx");
+            response.setHeader("Content-Disposition", "attachment;fileName=course_list.xlsx");
             xssfWorkbook.write(response.getOutputStream());
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
@@ -261,7 +263,7 @@ public class StudentServiceImpl implements IStudentService {
 
         try {
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=classlist.xlsx");
+            response.setHeader("Content-Disposition", "attachment;fileName=course_list.xlsx");
             xssfWorkbook.write(response.getOutputStream());
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);

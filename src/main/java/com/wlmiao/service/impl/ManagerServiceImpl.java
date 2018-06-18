@@ -7,17 +7,8 @@ import static com.wlmiao.util.MD5Util.getMD5Str;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.util.StringUtil;
-import com.wlmiao.bo.ClassMain;
-import com.wlmiao.bo.ClassMainExample;
-import com.wlmiao.bo.CourseMain;
-import com.wlmiao.bo.InstituteMajor;
-import com.wlmiao.bo.InstituteMajorExample;
-import com.wlmiao.bo.StudentMain;
-import com.wlmiao.bo.StudentMainExample;
+import com.wlmiao.bo.*;
 import com.wlmiao.bo.StudentMainExample.Criteria;
-import com.wlmiao.bo.TeacherMain;
-import com.wlmiao.bo.TeacherMainExample;
-import com.wlmiao.bo.TrainingPlan;
 import com.wlmiao.constant.ExceptionConstant;
 import com.wlmiao.dao.ClassMainMapper;
 import com.wlmiao.dao.CourseMainMapper;
@@ -138,7 +129,7 @@ public class ManagerServiceImpl implements IManagerService {
 
         try {
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=studentlist.xlsx");
+            response.setHeader("Content-Disposition", "attachment;fileName=student_list.xlsx");
             xssfWorkbook.write(response.getOutputStream());
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
@@ -183,7 +174,7 @@ public class ManagerServiceImpl implements IManagerService {
 
         try {
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=teacherlist.xlsx");
+            response.setHeader("Content-Disposition", "attachment;fileName=teacher_list.xlsx");
             xssfWorkbook.write(response.getOutputStream());
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
@@ -204,7 +195,7 @@ public class ManagerServiceImpl implements IManagerService {
         List<ClassMain> classMainList = classMainMapper.selectByExample(example);
 
         List<String> titleList = Arrays
-            .asList(new String[]{"id", "class_no", "grade", "student_count", "head_teacher", "major_no", "major"});
+            .asList(new String[]{"id", "班级编号", "年级", "学生人数", "班主任编号", "班主任姓名", "专业编号", "专业"});
 
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
         Sheet sheet = xssfWorkbook.createSheet("class_list");
@@ -220,9 +211,10 @@ public class ManagerServiceImpl implements IManagerService {
             row.createCell(1).setCellValue(classMain.getClassNo());
             row.createCell(2).setCellValue(classMain.getGrade());
             row.createCell(3).setCellValue(classMain.getStudentCount());
-            row.createCell(4).setCellValue(classMain.getHeadTeacher() == null ? "未分配" : classMain.getHeadTeacher());
-            row.createCell(5).setCellValue(classMain.getMajorNo());
-            row.createCell(6).setCellValue(classMain.getMajor());
+            row.createCell(4).setCellValue(classMain.getHeadTeacherNo() == null ? "未分配" : classMain.getHeadTeacherNo());
+            row.createCell(5).setCellValue(classMain.getHeadTeacherName() == null ? "未分配" : classMain.getHeadTeacherName());
+            row.createCell(6).setCellValue(classMain.getMajorNo());
+            row.createCell(7).setCellValue(classMain.getMajor());
         }
 
         try {
@@ -283,6 +275,12 @@ public class ManagerServiceImpl implements IManagerService {
 
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(teacherList);
 
+        TeacherMainExample teacherMainExample = new TeacherMainExample();
+        teacherMainExample.createCriteria();
+        List<TeacherMain> teacherMainList = teacherMainMapper.selectByExample(teacherMainExample);
+        HashMap<String,String> teacherMap = new HashMap<>();
+        teacherMainList.forEach(s -> teacherMap.put(s.getTeacherNo(), s.getTeacherName()));
+
         ClassMainExample example = new ClassMainExample();
         example.createCriteria().andMajorNoEqualTo(majorNo).andGradeEqualTo(grade);
         List<ClassMain> classMainList = classMainMapper.selectByExample(example);
@@ -293,16 +291,18 @@ public class ManagerServiceImpl implements IManagerService {
             for (Integer index = 0; index < classMainList.size(); index++) {
                 ClassMain classMain = classMainList.get(index);
                 HashMap<String, String> map = inputList.get(index % inputList.size());
-                classMain.setHeadTeacher(map.get("teacher_no"));
+                classMain.setHeadTeacherNo(map.get("教师编号"));
+                classMain.setHeadTeacherName(teacherMap.get(map.get("教师编号")));
                 classMainMapper.updateByPrimaryKeySelective(classMain);
             }
         } else {
-            HashMap<String, String> teacherMap = new HashMap<>();
+            HashMap<String, String> classTeacherMap = new HashMap<>();
             for (HashMap<String, String> map : inputList) {
-                teacherMap.put(map.get("class_no"), map.get("teacher_no"));
+                classTeacherMap.put(map.get("班级编号"), map.get("教师编号"));
             }
             for (ClassMain classMain : classMainList) {
-                classMain.setHeadTeacher(teacherMap.get(classMain.getClassNo()));
+                classMain.setHeadTeacherNo(classTeacherMap.get(classMain.getClassNo()));
+                classMain.setHeadTeacherName(teacherMap.get(classMain.getHeadTeacherNo()));
                 classMainMapper.updateByPrimaryKeySelective(classMain);
             }
         }
@@ -325,7 +325,7 @@ public class ManagerServiceImpl implements IManagerService {
 
         for (HashMap<String, String> map : inputList) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("course_type_no", map.get("课程编号"));
+            jsonObject.put("course_type_no", map.get("课程类型编号"));
             jsonObject.put("course_name", map.get("课程名"));
             jsonObject.put("credit", map.get("学分"));
             jsonObject.put("course_time", map.get("修读年") + "/" + map.get("学期"));
@@ -333,13 +333,27 @@ public class ManagerServiceImpl implements IManagerService {
             jsonArray.add(jsonObject);
         }
 
-        TrainingPlan trainingPlan = new TrainingPlan();
-        trainingPlan.setContent(jsonArray.toString());
-        trainingPlan.setMajorNo(majorNo);
-        trainingPlan.setMajor(instituteMajorList.get(0).getMajor());
-        trainingPlan.setInstituteNo(instituteMajorList.get(0).getInstituteNo());
-        trainingPlan.setInstitute(instituteMajorList.get(0).getInstitute());
-        trainingPlanMapper.insert(trainingPlan);
+        TrainingPlanExample example1 = new TrainingPlanExample();
+        example1.createCriteria().andMajorNoEqualTo(majorNo);
+        List<TrainingPlan> trainingPlanList = trainingPlanMapper.selectByExampleWithBLOBs(example1);
+
+        if (CollectionUtils.isEmpty(trainingPlanList)) {
+            TrainingPlan trainingPlan = new TrainingPlan();
+            trainingPlan.setContent(jsonArray.toString());
+            trainingPlan.setMajorNo(majorNo);
+            trainingPlan.setMajor(instituteMajorList.get(0).getMajor());
+            trainingPlan.setInstituteNo(instituteMajorList.get(0).getInstituteNo());
+            trainingPlan.setInstitute(instituteMajorList.get(0).getInstitute());
+            trainingPlanMapper.insert(trainingPlan);
+        } else {
+            TrainingPlan trainingPlan = trainingPlanList.get(0);
+            trainingPlan.setContent(jsonArray.toString());
+            trainingPlan.setMajorNo(majorNo);
+            trainingPlan.setMajor(instituteMajorList.get(0).getMajor());
+            trainingPlan.setInstituteNo(instituteMajorList.get(0).getInstituteNo());
+            trainingPlan.setInstitute(instituteMajorList.get(0).getInstitute());
+            trainingPlanMapper.updateByExampleWithBLOBs(trainingPlan, example1);
+        }
     }
 
     /**
@@ -506,6 +520,7 @@ public class ManagerServiceImpl implements IManagerService {
 
 
     public void insertUser(String userName, String nickName, Long type) {
+        System.out.println(userName);
         User user = new User();
         user.setNickname(nickName);
         user.setEmail(userName);

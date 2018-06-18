@@ -110,8 +110,12 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label no-padding-right"> 是否随机分配 </label>
                                     <div class="col-sm-6">
-                                        <textarea class="form-control" id="form-field-8" name="random" rows="1"></textarea>
+                                        <select class="form-control" id="voting-number" name="random">
+                                            <option value="false">否</option>
+                                            <option value="true">是</option>
+                                        </select>
                                     </div>
+                                    <div class="space-4"></div>
                                 </div>
                             </div>
 

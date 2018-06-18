@@ -85,6 +85,7 @@ public class WebController {
     @RequestMapping("/downloadStudent")
     public void downloadStudent(@RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
         HttpServletResponse response) throws IOException {
+        logger.info("get request to downloadTeacher, grade = {}, majorNo = {}", grade, majorNo);
         try {
             managerService.downloadStudent(majorNo, grade, response);
         } catch (EduSysException e) {
@@ -98,6 +99,7 @@ public class WebController {
     @RequestMapping("/downloadTeacher")
     public void downloadTeacher(@RequestParam("institute_no") String instituteNo, HttpServletResponse response)
         throws IOException {
+        logger.info("get request to downloadTeacher, instituteNo = {}", instituteNo);
         try {
             managerService.downloadTeacher(instituteNo, response);
         } catch (EduSysException e) {
@@ -143,6 +145,7 @@ public class WebController {
     @RequestMapping("/downloadClass")
     public void downloadClass(@RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
         HttpServletResponse response) throws IOException {
+        logger.info("get request to downloadClass, grade = {}, majorNo = {}", grade, majorNo);
         try {
             managerService.downloadClass(majorNo, grade, response);
         } catch (EduSysException e) {
@@ -157,6 +160,7 @@ public class WebController {
     public String professionalDiversion(@RequestParam("professional_diversion") String professionalDiversionTable,
         @RequestParam("class_student_number") Integer classStudentNumber, @RequestParam("grade") String grade,
         HttpServletResponse response) throws IOException {
+        logger.info("get request to professionalDiversion, professionalDiversionTable = {}, class_student_number = {}, grade = {}", professionalDiversionTable, classStudentNumber, grade);
         try {
             managerService.professionalDiversion(professionalDiversionTable, classStudentNumber, grade, response);
             return "success";
@@ -172,6 +176,7 @@ public class WebController {
     public String distributionTeacher(@RequestParam("teacher_list") String teacherList,
         @RequestParam("grade") String grade, @RequestParam("major_no") String majorNo,
         @RequestParam("random") Boolean random, HttpServletResponse response) throws IOException {
+        logger.info("get request to distributionTeacher, grade = {}, majorNo = {}, random = {}", grade, majorNo, random);
         try {
             managerService.distributionTeacher(teacherList, majorNo, grade, random, response);
             return "success";
@@ -185,6 +190,7 @@ public class WebController {
      */
     @RequestMapping("/checkGPA")
     public String checkGPA(HttpServletResponse response) throws IOException {
+        logger.info("get request to checkGPA");
         try {
             StudentMain studentMain = getCurrentStudent();
             studentService.checkGPA(studentMain, response);
@@ -199,6 +205,7 @@ public class WebController {
      */
     @RequestMapping("/downloadCourseChosenTable")
     public void downloadCourseChosenTable(HttpServletResponse response) throws IOException {
+        logger.info("get request to downloadCourseChosenTable");
         try {
             StudentMain studentMain = getCurrentStudent();
             studentService.downloadCourseChosenTable(studentMain, response);
@@ -211,8 +218,8 @@ public class WebController {
      * 选课
      */
     @RequestMapping("/courseChosen")
-    public String courseChosen(@RequestParam("course_chosen") String courseChosen, HttpServletResponse response)
-        throws IOException {
+    public String courseChosen(@RequestParam("course_chosen") String courseChosen, HttpServletResponse response) {
+        logger.info("get request to courseChosen, courseChosen = {}", courseChosen);
         try {
             StudentMain studentMain = getCurrentStudent();
             studentService.courseChosen(studentMain, courseChosen, response);
@@ -227,6 +234,7 @@ public class WebController {
      */
     @RequestMapping("/downloadStudentTimetable")
     public void downloadStudentTimetable(HttpServletResponse response) throws IOException {
+        logger.info("get request to downloadStudentTimetable");
         try {
             StudentMain studentMain = getCurrentStudent();
             studentService.downloadStudentTimetable(studentMain, response);
@@ -241,8 +249,10 @@ public class WebController {
     @RequestMapping("/downloadCourseStudent")
     public void downloadCourseStudent(@RequestParam("course_no") String courseNo, HttpServletResponse response)
         throws IOException {
+        logger.info("get request to downloadCourseStudent, courseNo = {}", courseNo);
         try {
-            teacherService.downloadCourseStudent(courseNo, response);
+            TeacherMain teacherMain = getCurrentTeacher();
+            teacherService.downloadCourseStudent(teacherMain, courseNo, response);
         } catch (EduSysException e) {
             e.returnException(response);
         }
@@ -254,8 +264,10 @@ public class WebController {
     @RequestMapping("/uploadCourseScore")
     public void uploadCourseScore(@RequestParam("course_score") String courseScore,
         @RequestParam("course_no") String courseNo, HttpServletResponse response) throws IOException {
+        logger.info("get request to uploadCourseScore, courseScore = {}, courseNo = {}", courseScore, courseNo);
         try {
-            teacherService.uploadStudentScore(courseScore, courseNo, response);
+            TeacherMain teacherMain = getCurrentTeacher();
+            teacherService.uploadStudentScore(teacherMain, courseScore, courseNo, response);
         } catch (EduSysException e) {
             e.returnException(response);
         }
@@ -266,6 +278,7 @@ public class WebController {
      */
     @RequestMapping("/downloadTeacherTimetable")
     public void downloadTeacherTimetable(HttpServletResponse response) throws IOException {
+        logger.info("get request to downloadTeacherTimetable");
         try {
             TeacherMain teacherMain = getCurrentTeacher();
             teacherService.downloadTeacherTimetable(teacherMain, response);

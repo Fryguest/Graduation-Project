@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -38,7 +40,15 @@ public class TeacherServiceImpl implements ITeacherService {
     private CourseMainMapper courseMainMapper;
 
     @Override
-    public void downloadCourseStudent(String courseNo, HttpServletResponse response) throws EduSysException {
+    public void downloadCourseStudent(TeacherMain teacherMain, String courseNo, HttpServletResponse response) throws EduSysException {
+
+        CourseMainExample courseMainExample = new CourseMainExample();
+        courseMainExample.createCriteria().andCourseNoEqualTo(courseNo);
+        List<CourseMain> courseMainList = courseMainMapper.selectByExample(courseMainExample);
+        if (CollectionUtils.isEmpty(courseMainList) || !courseMainList.get(0).getTeacherNo().equals(teacherMain.getTeacherNo())) {
+            throw  new EduSysException(ExceptionConstant.UNEXCEPT_ERROR);
+        }
+
         CourseStudentExample example = new CourseStudentExample();
         example.createCriteria().andCourseNoEqualTo(courseNo);
         List<CourseStudent> courseStudentList = courseStudentMapper.selectByExample(example);
@@ -52,8 +62,7 @@ public class TeacherServiceImpl implements ITeacherService {
         }
 
         List<String> titleList = Arrays
-            .asList(new String[]{"id", "student_no", "student_name", "sex", "institute_no", "institute", "major_no",
-                "major", "grade"});
+            .asList(new String[]{"id", "学生学号", "学生姓名", "性别", "学院号", "学院", "专业号", "专业", "年级"});
 
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
         Sheet sheet = xssfWorkbook.createSheet("student_list");
@@ -86,8 +95,15 @@ public class TeacherServiceImpl implements ITeacherService {
     }
 
     @Override
-    public void uploadStudentScore(String studentScore, String courseNo, HttpServletResponse response)
+    public void uploadStudentScore(TeacherMain teacherMain , String studentScore, String courseNo, HttpServletResponse response)
         throws EduSysException {
+        CourseMainExample courseMainExample = new CourseMainExample();
+        courseMainExample.createCriteria().andCourseNoEqualTo(courseNo);
+        List<CourseMain> courseMainList = courseMainMapper.selectByExample(courseMainExample);
+        if (CollectionUtils.isEmpty(courseMainList) || !courseMainList.get(0).getTeacherNo().equals(teacherMain.getTeacherNo())) {
+            throw  new EduSysException(ExceptionConstant.UNEXCEPT_ERROR);
+        }
+
         List<HashMap<String, String>> inputList = XlsxUtil.readFromXls(studentScore);
         for (HashMap<String, String> map : inputList) {
             Integer score = Integer.valueOf(map.get("分数"));
@@ -136,7 +152,7 @@ public class TeacherServiceImpl implements ITeacherService {
 
         try {
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=classlist.xlsx");
+            response.setHeader("Content-Disposition", "attachment;fileName=course_table.xlsx");
             xssfWorkbook.write(response.getOutputStream());
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
