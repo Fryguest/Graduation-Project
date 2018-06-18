@@ -4,8 +4,10 @@ import static com.wlmiao.constant.RoleConstant.STUDENT;
 import static com.wlmiao.constant.RoleConstant.TEACHER;
 import static com.wlmiao.util.MD5Util.getMD5Str;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
 import com.github.pagehelper.util.StringUtil;
 import com.wlmiao.bo.*;
 import com.wlmiao.bo.StudentMainExample.Criteria;
@@ -100,8 +102,8 @@ public class ManagerServiceImpl implements IManagerService {
         List<StudentMain> studentMainList = studentMainMapper.selectByExample(example);
 
         List<String> titleList = Arrays
-            .asList(new String[]{"id", "student_no", "student_name", "class_no", "sex", "institute_no",
-                "institute", "major_no", "major", "grade", "native_place", "identity_number"});
+            .asList(new String[]{"id", "学生学号", "学生姓名", "班级编号", "性别", "学院号",
+                "学院", "专业号", "专业", "年级", "籍贯", "身份证号"});
 
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
         Sheet sheet = xssfWorkbook.createSheet("student_list");
@@ -148,8 +150,7 @@ public class ManagerServiceImpl implements IManagerService {
         List<TeacherMain> teacherMainList = teacherMainMapper.selectByExample(example);
 
         List<String> titleList = Arrays
-            .asList(new String[]{"id", "teacher_no", "teacher_name", "sex", "institute_no", "institute",
-                "title", "native_place", "identity_number"});
+            .asList(new String[]{"id", "教师编号", "教师姓名", "性别", "学院号", "学院", "职称", "籍贯", "身份证号"});
 
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
         Sheet sheet = xssfWorkbook.createSheet("teacher_list");
@@ -219,7 +220,7 @@ public class ManagerServiceImpl implements IManagerService {
 
         try {
             response.setContentType("multipart/form-data");
-            response.setHeader("Content-Disposition", "attachment;fileName=classlist.xlsx");
+            response.setHeader("Content-Disposition", "attachment;fileName=class_list.xlsx");
             xssfWorkbook.write(response.getOutputStream());
         } catch (IOException e) {
             throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
@@ -241,7 +242,7 @@ public class ManagerServiceImpl implements IManagerService {
         List<StudentMain> studentMainList = new ArrayList<>();
         for (HashMap<String, String> map : inputList) {
             StudentMainExample example = new StudentMainExample();
-            example.createCriteria().andStudentNoEqualTo(map.get("student_no"));
+            example.createCriteria().andStudentNoEqualTo(map.get("学生学号"));
 
             List<StudentMain> selectList = studentMainMapper.selectByExample(example);
             if (CollectionUtils.isEmpty(selectList)) {
@@ -249,8 +250,8 @@ public class ManagerServiceImpl implements IManagerService {
             }
 
             StudentMain studentMain = selectList.get(0);
-            studentMain.setMajorNo(map.get("major_no"));
-            studentMain.setMajor(instituteMajorMap.get(map.get("major_no")));
+            studentMain.setMajorNo(map.get("专业号"));
+            studentMain.setMajor(instituteMajorMap.get(map.get("专业号")));
             studentMainList.add(studentMain);
         }
 
@@ -325,7 +326,7 @@ public class ManagerServiceImpl implements IManagerService {
 
         for (HashMap<String, String> map : inputList) {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("course_type_no", map.get("课程类型编号"));
+            jsonObject.put("course_type", map.get("课程类型编号"));
             jsonObject.put("course_name", map.get("课程名"));
             jsonObject.put("credit", map.get("学分"));
             jsonObject.put("course_time", map.get("修读年") + "/" + map.get("学期"));
@@ -353,6 +354,57 @@ public class ManagerServiceImpl implements IManagerService {
             trainingPlan.setInstituteNo(instituteMajorList.get(0).getInstituteNo());
             trainingPlan.setInstitute(instituteMajorList.get(0).getInstitute());
             trainingPlanMapper.updateByExampleWithBLOBs(trainingPlan, example1);
+        }
+    }
+
+
+    /**
+     * 下载培养计划
+     */
+    @Override
+    public void downloadTrainPlan(String majorNo, HttpServletResponse response) throws EduSysException {
+
+        TrainingPlanExample example = new TrainingPlanExample();
+        example.createCriteria().andMajorNoEqualTo(majorNo);
+        List<TrainingPlan> trainingPlanList = trainingPlanMapper.selectByExampleWithBLOBs(example);
+
+        if (CollectionUtils.isEmpty(trainingPlanList)) {
+            throw new EduSysException(ExceptionConstant.UNEXCEPT_ERROR);
+        }
+
+        TrainingPlan trainingPlan = trainingPlanList.get(0);
+
+        List<String> titleList = Arrays.asList(new String[]{"id", "课程类型编号", "课程名", "学分", "修读年", "学期", "考查方式"});
+
+        XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
+        Sheet sheet = xssfWorkbook.createSheet("train_plan");
+        Row titleRow = sheet.createRow(0);
+        for (Integer i = 0; i < titleList.size(); i++) {
+            titleRow.createCell(i).setCellValue(titleList.get(i));
+        }
+
+        JSONArray content = JSON.parseArray(trainingPlan.getContent());
+        for (Integer rowNumber = 1; rowNumber <= content.size(); rowNumber++) {
+            Row row = sheet.createRow(rowNumber);
+            JSONObject jsonObject = content.getJSONObject(rowNumber - 1);
+            row.createCell(0).setCellValue(rowNumber);
+            row.createCell(1).setCellValue(jsonObject.getString("course_type"));
+            row.createCell(2).setCellValue(jsonObject.getString("course_name"));
+            row.createCell(3).setCellValue(jsonObject.getString("credit"));
+            String time =jsonObject.getString("coures_time");
+            String year = time.substring(time.indexOf("/"));
+            String tem = time.substring(time.indexOf("/")+1);
+            row.createCell(4).setCellValue(year);
+            row.createCell(5).setCellValue(tem);
+            row.createCell(6).setCellValue(jsonObject.getString("examination_method"));
+        }
+
+        try {
+            response.setContentType("multipart/form-data");
+            response.setHeader("Content-Disposition", "attachment;fileName=train_plan.xlsx");
+            xssfWorkbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            throw new EduSysException(ExceptionConstant.IO_EXCEPTION);
         }
     }
 
@@ -442,15 +494,15 @@ public class ManagerServiceImpl implements IManagerService {
      */
     private StudentMain produceStudent(HashMap<String, String> map, String grade) {
         StudentMain studentMain = new StudentMain();
-        studentMain.setStudentName(map.get("student_name"));
-        studentMain.setSex(map.get("sex"));
-        studentMain.setInstituteNo(map.get("institute_no"));
-        studentMain.setInstitute(map.get("institute"));
-        studentMain.setMajorNo(map.get("major_no"));
-        studentMain.setMajor(map.get("major"));
+        studentMain.setStudentName(map.get("学生姓名"));
+        studentMain.setSex(map.get("性别"));
+        studentMain.setInstituteNo(map.get("学院号"));
+        studentMain.setInstitute(map.get("学院"));
+        studentMain.setMajorNo(map.get("专业号"));
+        studentMain.setMajor(map.get("专业"));
         studentMain.setGrade(grade);
-        studentMain.setNativePlace(map.get("native_place"));
-        studentMain.setIdentityNumber(map.get("identity_number"));
+        studentMain.setNativePlace(map.get("籍贯"));
+        studentMain.setIdentityNumber(map.get("身份证号"));
         studentMain.setGpa((float) 0);
         return studentMain;
     }
@@ -460,15 +512,14 @@ public class ManagerServiceImpl implements IManagerService {
      */
     private TeacherMain produceTeacher(HashMap<String, String> map) {
         TeacherMain teacher = new TeacherMain();
-        teacher.setIdentityNumber(map.get("identity_number"));
-        teacher.setTeacherNo(map.get("teacher_no"));
-        teacher.setTeacherName(map.get("teacher_name"));
-        teacher.setSex(map.get("sex"));
-        teacher.setInstituteNo(map.get("institute_no"));
-        teacher.setInstitute(map.get("institute"));
-        teacher.setNativePlace(map.get("native_place"));
-        teacher.setIdentityNumber(map.get("identity_number"));
-        teacher.setTitle(map.get("title"));
+        teacher.setIdentityNumber(map.get("身份证号"));
+        teacher.setTeacherNo(map.get("教师编号"));
+        teacher.setTeacherName(map.get("教师姓名"));
+        teacher.setSex(map.get("性别"));
+        teacher.setInstituteNo(map.get("学院号"));
+        teacher.setInstitute(map.get("学院"));
+        teacher.setNativePlace(map.get("籍贯"));
+        teacher.setTitle(map.get("职称"));
         return teacher;
     }
 

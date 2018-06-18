@@ -123,6 +123,18 @@ public class WebController {
         }
     }
 
+    @RequestMapping("/downloadTrainPlan")
+    public void downloadTrainPlan(@RequestParam("major") String majorNo, HttpServletResponse response) throws IOException {
+        logger.info("get request to downloadTrainPlan, majorNo = {}", majorNo);
+        try {
+            managerService.downloadTrainPlan(majorNo, response);
+        } catch(EduSysException e) {
+            e.printStackTrace();
+            e.returnException(response);
+        }
+
+    }
+
     /**
      * 教师开课
      */

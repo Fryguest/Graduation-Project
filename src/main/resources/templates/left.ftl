@@ -104,6 +104,12 @@
             上传培养计划
           </a>
         </li>
+        <li <#if taskType?? && taskType == 30009>class="active"</#if>>
+          <a href="managerdownloadTrainPlanFront">
+            <i class="icon-double-angle-right"></i>
+            下载培养计划
+          </a>
+        </li>
         <li <#if taskType?? && taskType == 30007>class="active"</#if>>
           <a href="manageruploadCourseInformationFront">
             <i class="icon-double-angle-right"></i>

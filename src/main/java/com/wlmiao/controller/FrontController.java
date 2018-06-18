@@ -71,6 +71,12 @@ public class FrontController {
         return "distribution_teacher";
     }
 
+    @RequestMapping("/managerdownloadTrainPlanFront")
+    public String downloadTrainPlanFront(Model model) {
+        model.addAttribute("taskType", FrontConstant.DOWNLOAD_TRAIN_PLAN);
+        return "download_train_plan";
+    }
+
     @RequestMapping("/managerimportTeacherFront")
     public String managerimportTeacherFront(Model model){
         model.addAttribute("taskType", FrontConstant.IMPORT_TEACHER);

@@ -25,6 +25,8 @@ public interface IManagerService {
 
     void uploadTrainPlan(String trainPlan, String major, HttpServletResponse response) throws EduSysException;
 
+    void downloadTrainPlan(String majorNo, HttpServletResponse response) throws EduSysException;
+
     void uploadCourseInformation(String courseInformation, String grade, HttpServletResponse response)
         throws EduSysException;
 }

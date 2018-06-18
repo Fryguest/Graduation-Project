@@ -73,7 +73,7 @@ public class StudentServiceImpl implements IStudentService {
         Double totalGP = (double) 0;
         for (Object o : content) {
             JSONObject jsonObject = (JSONObject) o;
-            String courseType = jsonObject.getString("course_type_no");
+            String courseType = jsonObject.getString("course_type");
             if (courseScoreMap.get(courseType) != null) {
                 Integer score = courseScoreMap.get(courseType);
                 if (score >= 60) {
@@ -90,7 +90,7 @@ public class StudentServiceImpl implements IStudentService {
         Double GPA = totalGP / totalCredit;
 
         XSSFWorkbook xssfWorkbook = new XSSFWorkbook();
-        Sheet sheet = xssfWorkbook.createSheet("student_list");
+        Sheet sheet = xssfWorkbook.createSheet("GPA");
 
         Row tempRow = sheet.createRow(0);
         tempRow.createCell(0).setCellValue("姓名: ");
@@ -113,7 +113,7 @@ public class StudentServiceImpl implements IStudentService {
         for (Integer rowNumber = 0; rowNumber < content.size(); rowNumber++) {
             Row row = sheet.createRow(rowNumber + 3);
             JSONObject jsonObject = content.getJSONObject(rowNumber);
-            row.createCell(0).setCellValue(jsonObject.getString("course_type_no"));
+            row.createCell(0).setCellValue(jsonObject.getString("course_type"));
             row.createCell(1).setCellValue(jsonObject.getString("course_name"));
             row.createCell(2).setCellValue(jsonObject.getString("course_time"));
             row.createCell(3).setCellValue(jsonObject.getString("credit"));
@@ -161,7 +161,7 @@ public class StudentServiceImpl implements IStudentService {
         List<CourseMain> courseMainList = new ArrayList<>();
         for (Object o : content) {
             JSONObject jsonObject = (JSONObject) o;
-            String courseTypeNo = jsonObject.getString("course_type_no");
+            String courseTypeNo = jsonObject.getString("course_type");
             CourseMainExample example1 = new CourseMainExample();
             example1.createCriteria().andCourseTypeEqualTo(courseTypeNo).andGradeEqualTo(grade);
             List<CourseMain> courseMains = courseMainMapper.selectByExample(example1);
